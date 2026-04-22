@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Монтаж">
+<title>Е-Монтаж</title>
+<style>
+:root {
+  --bg: #111;
+  --card: #1e1e1e;
+  --card2: #2a2a2a;
+  --border: #333;
+  --accent: #c8f055;
+  --text: #fff;
+  --muted: #888;
+  --dim: #555;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { background: var(--bg); }
+body { font-family: -apple-system, sans-serif; color: var(--text); background: var(--bg); padding-bottom: 130px; }
+
+.header { padding: 52px 18px 12px; }
+.brand { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); }
+.title { font-size: 28px; font-weight: 800; margin-top: 2px; }
+
+.tabs { display: flex; gap: 8px; padding: 0 18px 16px; overflow-x: auto; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab-btn { flex-shrink: 0; padding: 8px 18px; border-radius: 100px; font-size: 14px; font-weight: 600; border: 1.5px solid var(--border); background: var(--card); color: var(--muted); cursor: pointer; }
+.tab-btn.on { background: var(--accent); color: #111; border-color: var(--accent); }
+
+.page { display: none; padding: 0 18px; }
+.page.on { display: block; }
+
+.group-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; margin: 20px 0 8px 2px; }
+
+.card { background: var(--card); border-radius: 14px; overflow: hidden; margin-bottom: 4px; }
+
+.row { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); gap: 10px; }
+.row:last-child { border-bottom: none; }
+.row-info { flex: 1; }
+.row-name { font-size: 15px; font-weight: 500; }
+.row-hint { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+input[type=number] {
+  width: 68px;
+  background: var(--card2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+  font-family: -apple-system, sans-serif;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input[type=number]:focus { outline: none; border-color: var(--accent); }
+
+.sep { font-size: 14px; color: var(--dim); }
+.unit-label { font-size: 13px; color: var(--dim); min-width: 24px; }
+
+.tog-row { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); gap: 12px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+.tog-row:last-child { border-bottom: none; }
+.tog-row:active { background: var(--card2); }
+.tog-info { flex: 1; }
+.tog-name { font-size: 15px; font-weight: 500; }
+.tog-price { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.sw { width: 48px; height: 28px; border-radius: 100px; background: var(--card2); border: 1.5px solid var(--border); position: relative; flex-shrink: 0; transition: background 0.2s; }
+.sw::after { content: ''; position: absolute; width: 20px; height: 20px; background: var(--dim); border-radius: 50%; top: 2px; left: 2px; transition: transform 0.2s, background 0.2s; }
+.sw.on { background: var(--accent); border-color: var(--accent); }
+.sw.on::after { transform: translateX(20px); background: #111; }
+
+.tip { background: #1a2200; border: 1px solid #3a5000; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; }
+.tip p { font-size: 13px; color: #a0c040; line-height: 1.6; }
+.tip strong { color: var(--accent); }
+
+.footer { position: fixed; bottom: 0; left: 0; right: 0; background: #111; border-top: 1px solid var(--border); padding: 12px 18px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+.subs { margin-bottom: 8px; }
+.sub-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); padding: 2px 0; }
+.total-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 10px; }
+.total-label { font-size: 14px; font-weight: 600; color: var(--muted); }
+.total-val { font-size: 30px; font-weight: 800; color: var(--accent); letter-spacing: -1px; }
+
+.reset-btn { display: block; width: 100%; margin-top: 16px; padding: 14px; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; font-size: 15px; font-weight: 600; color: var(--muted); cursor: pointer; font-family: -apple-system, sans-serif; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">Е-МОНТАЖ</div>
+  <div class="title">Калькулятор</div>
+</div>
+
+<div class="tabs">
+  <div class="tab-btn on" id="tb0" onclick="showTab(0)">Ламінат</div>
+  <div class="tab-btn" id="tb1" onclick="showTab(1)">Двері</div>
+  <div class="tab-btn" id="tb2" onclick="showTab(2)">Знижки</div>
+  <div class="tab-btn" id="tb3" onclick="showTab(3)">Поради</div>
+</div>
+
+<div class="page on" id="pg0">
+  <div class="group-title">Розміри кімнат (м × м)</div>
+  <div class="card">
+    <div class="row">
+      <div class="row-info"><div class="row-name">Кімната 1</div></div>
+      <input type="number" id="r1w" placeholder="0" min="0" step="0.1" inputmode="decimal" onchange="calc()" oninput="calc()">
+      <span class="sep">×</span>
+      <input type="number" id="r1h" placeholder="0" min="0" step="0.1" inputmode="decimal" onchange="calc()" oninput="calc()">
+    </div>
+    <div class="row">
+      <div class="row-info"><div class="row-name">Кімната 2</div></div>
+      <input type="number" id="r2w" placeholder="0" min="0" step="0.1" inputmode="decimal" onchange="calc()" oninput="calc()">
+      <span class="sep">×</span>
+      <input type="number" id="r2h" placeholder="0" min="0" step="0.1" inputmode="decimal" onchange="calc()" oninput="calc()">
+    </div>
+    <div class="row">
+      <div class="row-info"><div class="row-name">Кімната 3</div></div>
+      <input type="number" id="r3w" placeholder="0" min="0" step="0.1" inputmode="decimal" onchange="calc()" oninput="calc()">
+      <span class="sep">×</span>
+      <input type="number" id="r3h" placeholder="0" min="0" step="0.1" inputmode="decimal" onchange="calc()" oninput="calc()">
+    </div>
+    <div class="row">
+      <div class="row-info"><div class="row-name">Кімната 4</div></div>
+      <input type="number" id="r4w" placeholder="0" min="0" step="0.1" inputmode="decimal" onchange="calc()" oninput="calc()">
+      <span class="sep">×</span>
+      <input type="number" id="r4h" placeholder="0" min="0" step="0.1" inputmode="decimal" onchange="calc()" oninput="calc()">
+    </div>
+  </div>
+
+  <div class="group-title">Плінтуси</div>
+  <div class="card">
+    <div class="row">
+      <div class="row-info">
+        <div class="row-name">Периметр</div>
+        <div class="row-hint">40 грн / п.м.</div>
+      </div>
+      <input type="number" id="plin" placeholder="0" min="0" step="0.5" inputmode="decimal" onchange="calc()" oninput="calc()">
+      <span class="unit-label">п.м.</span>
+    </div>
+  </div>
+
+  <div class="group-title">Додатково</div>
+  <div class="card">
+    <div class="tog-row" onclick="tog('diag')">
+      <div class="tog-info">
+        <div class="tog-name">Діагональне укладання</div>
+        <div class="tog-price">+50 грн/м²</div>
+      </div>
+      <div class="sw" id="sw_diag"></div>
+    </div>
+    <div class="tog-row" onclick="tog('vyrivn')">
+      <div class="tog-info">
+        <div class="tog-name">Вирівнювання основи</div>
+        <div class="tog-price">+80 грн/м²</div>
+      </div>
+      <div class="sw" id="sw_vyrivn"></div>
+    </div>
+    <div class="tog-row" onclick="tog('dem_l')">
+      <div class="tog-info">
+        <div class="tog-name">Демонтаж старої підлоги</div>
+        <div class="tog-price">+50 грн/м²</div>
+      </div>
+      <div class="sw" id="sw_dem_l"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="pg1">
+  <div class="group-title">Міжкімнатні двері</div>
+  <div class="card">
+    <div class="row">
+      <div class="row-info"><div class="row-name">Стандарт</div><div class="row-hint">1 600 грн / шт</div></div>
+      <input type="number" id="d_std" placeholder="0" min="0" step="1" inputmode="numeric" onchange="calc()" oninput="calc()">
+      <span class="unit-label">шт</span>
+    </div>
+    <div class="row">
+      <div class="row-info"><div class="row-name">З розширювачем</div><div class="row-hint">1 900 грн / шт</div></div>
+      <input type="number" id="d_ext" placeholder="0" min="0" step="1" inputmode="numeric" onchange="calc()" oninput="calc()">
+      <span class="unit-label">шт</span>
+    </div>
+    <div class="row">
+      <div class="row-info"><div class="row-name">Розсувні (купе)</div><div class="row-hint">2 200 грн / шт</div></div>
+      <input type="number" id="d_kupe" placeholder="0" min="0" step="1" inputmode="numeric" onchange="calc()" oninput="calc()">
+      <span class="unit-label">шт</span>
+    </div>
+    <div class="row">
+      <div class="row-info"><div class="row-name">Демонтаж старих</div><div class="row-hint">400 грн / шт</div></div>
+      <input type="number" id="d_dem" placeholder="0" min="0" step="1" inputmode="numeric" onchange="calc()" oninput="calc()">
+      <span class="unit-label">шт</span>
+    </div>
+  </div>
+
+  <div class="group-title">Вхідні двері</div>
+  <div class="card">
+    <div class="row">
+      <div class="row-info"><div class="row-name">Встановлення</div><div class="row-hint">2 800 грн / шт</div></div>
+      <input type="number" id="d_vhid" placeholder="0" min="0" step="1" inputmode="numeric" onchange="calc()" oninput="calc()">
+      <span class="unit-label">шт</span>
+    </div>
+    <div class="row">
+      <div class="row-info"><div class="row-name">Демонтаж + встановлення</div><div class="row-hint">3 400 грн / шт</div></div>
+      <input type="number" id="d_vhid_dem" placeholder="0" min="0" step="1" inputmode="numeric" onchange="calc()" oninput="calc()">
+      <span class="unit-label">шт</span>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="pg2">
+  <div class="group-title">Доплати</div>
+  <div class="card">
+    <div class="tog-row" onclick="tog('poza')">
+      <div class="tog-info"><div class="tog-name">Виїзд за місто</div><div class="tog-price">+500 грн</div></div>
+      <div class="sw" id="sw_poza"></div>
+    </div>
+    <div class="tog-row" onclick="tog('termin')">
+      <div class="tog-info"><div class="tog-name">Термінове замовлення</div><div class="tog-price">+15% до суми</div></div>
+      <div class="sw" id="sw_termin"></div>
+    </div>
+  </div>
+
+  <div class="group-title">Знижки</div>
+  <div class="card">
+    <div class="tog-row" onclick="tog('nashy')">
+      <div class="tog-info"><div class="tog-name">Матеріал з нашого магазину</div><div class="tog-price">−5%</div></div>
+      <div class="sw" id="sw_nashy"></div>
+    </div>
+    <div class="tog-row" onclick="tog('kvart')">
+      <div class="tog-info"><div class="tog-name">Квартира під ключ</div><div class="tog-price">−10%</div></div>
+      <div class="sw" id="sw_kvart"></div>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetAll()">Очистити все</button>
+</div>
+
+<div class="page" id="pg3">
+  <div class="group-title" style="margin-top:8px;">Поради</div>
+  <div class="tip"><p><strong>Гарантія 12 місяців</strong> — говори про неї кожному клієнту. Це головна конкурентна перевага.</p></div>
+  <div class="tip"><p><strong>Ламінат:</strong> додавай 10% на відходи при замовленні. При діагональному — 15%.</p></div>
+  <div class="tip"><p><strong>Розширювач:</strong> якщо товщина стіни більше 90 мм — обирай цей тип. Перевіряй рулеткою.</p></div>
+  <div class="tip"><p><strong>Не знижуй одразу:</strong> спочатку поясни що входить. Якщо тиснуть — прибирай послугу, не ціну.</p></div>
+  <div class="tip"><p><strong>Виробіток удвох:</strong> за день реально 2–3 двері або 25–35 м² ламінату.</p></div>
+</div>
+
+<div class="footer">
+  <div class="subs">
+    <div class="sub-row"><span>Ламінат + плінтуси</span><span id="s_lam">0 грн</span></div>
+    <div class="sub-row"><span>Двері</span><span id="s_dv">0 грн</span></div>
+    <div class="sub-row"><span>Знижки / доплати</span><span id="s_ex">—</span></div>
+  </div>
+  <div class="total-row">
+    <span class="total-label">Разом</span>
+    <span class="total-val" id="s_total">0 грн</span>
+  </div>
+</div>
+
+<script>
+var sw = { diag:false, vyrivn:false, dem_l:false, poza:false, termin:false, nashy:false, kvart:false };
+
+function showTab(i) {
+  var tabs = document.querySelectorAll('.tab-btn');
+  var pages = document.querySelectorAll('.page');
+  for (var t = 0; t < tabs.length; t++) {
+    tabs[t].className = t === i ? 'tab-btn on' : 'tab-btn';
+  }
+  for (var p = 0; p < pages.length; p++) {
+    pages[p].className = p === i ? 'page on' : 'page';
+  }
+}
+
+function tog(key) {
+  sw[key] = !sw[key];
+  document.getElementById('sw_' + key).className = sw[key] ? 'sw on' : 'sw';
+  calc();
+}
+
+function gv(id) {
+  var val = parseFloat(document.getElementById(id).value);
+  return isNaN(val) ? 0 : val;
+}
+
+function fmt(n) {
+  var s = Math.round(n).toString();
+  var result = '';
+  var count = 0;
+  for (var i = s.length - 1; i >= 0; i--) {
+    if (count > 0 && count % 3 === 0) result = ' ' + result;
+    result = s[i] + result;
+    count++;
+  }
+  return result + ' грн';
+}
+
+function calc() {
+  var area = gv('r1w')*gv('r1h') + gv('r2w')*gv('r2h') + gv('r3w')*gv('r3h') + gv('r4w')*gv('r4h');
+  var rate = 150;
+  if (sw.diag) rate += 50;
+  var lam = area * rate;
+  if (sw.vyrivn) lam += area * 80;
+  if (sw.dem_l) lam += area * 50;
+  lam += gv('plin') * 40;
+
+  var dv = gv('d_std')*1600 + gv('d_ext')*1900 + gv('d_kupe')*2200 + gv('d_dem')*400 + gv('d_vhid')*2800 + gv('d_vhid_dem')*3400;
+
+  var extra = 0;
+  if (sw.poza) extra += 500;
+
+  var total = lam + dv + extra;
+  if (sw.termin) total = total * 1.15;
+  if (sw.nashy) total = total * 0.95;
+  if (sw.kvart) total = total * 0.90;
+
+  var allExtra = Math.round(total) - Math.round(lam) - Math.round(dv) - Math.round(extra);
+
+  document.getElementById('s_lam').textContent = fmt(lam);
+  document.getElementById('s_dv').textContent = fmt(dv);
+
+  if (allExtra > 0) document.getElementById('s_ex').textContent = '+' + fmt(allExtra);
+  else if (allExtra < 0) document.getElementById('s_ex').textContent = '−' + fmt(Math.abs(allExtra));
+  else document.getElementById('s_ex').textContent = '—';
+
+  document.getElementById('s_total').textContent = fmt(total);
+}
+
+function resetAll() {
+  var inputs = document.querySelectorAll('input[type=number]');
+  for (var i = 0; i < inputs.length; i++) inputs[i].value = '';
+  var keys = ['diag','vyrivn','dem_l','poza','termin','nashy','kvart'];
+  for (var k = 0; k < keys.length; k++) {
+    sw[keys[k]] = false;
+    document.getElementById('sw_' + keys[k]).className = 'sw';
+  }
+  calc();
+}
+
+calc();
+</script>
+</body>
+</html>
