@@ -1,424 +1,1168 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <link rel="apple-touch-icon" href="icon.png">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Монтаж">
-<title>Е-Монтаж Калькулятор</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0f0f0f;
-    --surface: #1a1a1a;
-    --surface2: #242424;
-    --border: rgba(255,255,255,0.08);
-    --accent: #c8f055;
-    --accent-dark: #a8d040;
-    --text: #ffffff;
-    --text2: rgba(255,255,255,0.55);
-    --text3: rgba(255,255,255,0.3);
-    --danger: #ff6b6b;
-    --success: #c8f055;
-    --radius: 16px;
-    --radius-sm: 10px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; background: var(--bg); font-family: 'Manrope', sans-serif; color: var(--text); overflow-x: hidden; }
-  body { padding-bottom: env(safe-area-inset-bottom); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бланк замірів та розрахунків</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  .app { display: flex; flex-direction: column; min-height: 100vh; }
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2d5a8c;
+            --accent: #d4a574;
+            --accent-light: #e8c4a0;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --border-light: #f7fafc;
+            --light: #f8f9fa;
+            --success: #276749;
+            --danger: #742a2a;
+            --shadow: 0 2px 8px rgba(26, 54, 93, 0.08);
+            --shadow-lg: 0 10px 30px rgba(26, 54, 93, 0.12);
+        }
 
-  .header { padding: 56px 20px 16px; background: var(--bg); position: sticky; top: 0; z-index: 10; }
-  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-  .logo { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
-  .reset-btn { font-size: 13px; color: var(--text2); background: none; border: none; cursor: pointer; font-family: inherit; padding: 4px 8px; }
-  h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+        html, body {
+            font-family: 'Segoe UI', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #eef2f5 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
 
-  .tabs { display: flex; gap: 6px; padding: 12px 20px 0; overflow-x: auto; scrollbar-width: none; }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab { flex-shrink: 0; padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text2); transition: all 0.2s; }
-  .tab.active { background: var(--accent); color: #0f0f0f; border-color: var(--accent); }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
 
-  .content { flex: 1; padding: 16px 20px; }
-  .section { display: none; }
-  .section.active { display: block; }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: slideDown 0.7s ease-out;
+        }
 
-  .group { margin-bottom: 16px; }
-  .group-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--text3); text-transform: uppercase; margin-bottom: 8px; padding-left: 4px; }
-  .card { background: var(--surface); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-  .field { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
-  .field:last-child { border-bottom: none; }
-  .field-info { flex: 1; min-width: 0; }
-  .field-name { font-size: 14px; font-weight: 500; color: var(--text); }
-  .field-hint { font-size: 11px; color: var(--text3); margin-top: 2px; }
-  .field-inputs { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-  .inp { width: 64px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 15px; font-weight: 600; color: var(--text); text-align: right; font-family: inherit; -webkit-appearance: none; }
-  .inp:focus { outline: none; border-color: var(--accent); }
-  .inp::placeholder { color: var(--text3); font-weight: 400; }
-  .x-sep { font-size: 13px; color: var(--text3); }
-  .unit { font-size: 12px; color: var(--text3); flex-shrink: 0; }
+        .logo-upload {
+            margin-bottom: 30px;
+            text-align: center;
+        }
 
-  .toggle { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); cursor: pointer; }
-  .toggle:last-child { border-bottom: none; }
-  .toggle:active { background: var(--surface2); }
-  .toggle-info { flex: 1; }
-  .toggle-name { font-size: 14px; font-weight: 500; color: var(--text); }
-  .toggle-price { font-size: 12px; color: var(--text2); margin-top: 2px; }
-  .switch { width: 44px; height: 26px; background: var(--surface2); border-radius: 50px; position: relative; flex-shrink: 0; transition: background 0.2s; border: 1px solid var(--border); }
-  .switch.on { background: var(--accent); border-color: var(--accent); }
-  .switch::after { content: ''; position: absolute; width: 20px; height: 20px; background: var(--text3); border-radius: 50%; top: 2px; left: 2px; transition: transform 0.2s, background 0.2s; }
-  .switch.on::after { transform: translateX(18px); background: #0f0f0f; }
+        .logo-placeholder {
+            display: inline-block;
+            width: 120px;
+            height: 120px;
+            background: white;
+            border: 2px dashed var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-  .total-bar { position: sticky; bottom: 0; background: var(--bg); border-top: 1px solid var(--border); padding: 12px 20px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
-  .total-rows { margin-bottom: 10px; }
-  .total-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); padding: 2px 0; }
-  .total-row.zero { opacity: 0.35; }
-  .total-main { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); }
-  .total-label { font-size: 13px; font-weight: 600; color: var(--text2); }
-  .total-amount { font-size: 28px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
+        .logo-placeholder:hover {
+            border-color: var(--primary);
+            background: var(--light);
+        }
 
-  .hint-box { background: var(--surface); border-radius: var(--radius); padding: 14px 16px; border: 1px solid var(--border); margin-bottom: 16px; }
-  .hint-box p { font-size: 13px; color: var(--text2); line-height: 1.6; }
-  .hint-box strong { color: var(--accent); font-weight: 700; }
+        .logo-placeholder img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
 
-  .install-tip { background: linear-gradient(135deg, #1a2400, #0f1a00); border: 1px solid rgba(200,240,85,0.2); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
-  .install-tip .it-title { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
-  .install-tip .it-text { font-size: 12px; color: rgba(200,240,85,0.7); line-height: 1.6; }
+        .logo-placeholder span {
+            color: var(--text-light);
+            font-size: 12px;
+            text-align: center;
+        }
 
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f2f2f7;
-      --surface: #ffffff;
-      --surface2: #f2f2f7;
-      --border: rgba(0,0,0,0.08);
-      --text: #1c1c1e;
-      --text2: rgba(0,0,0,0.5);
-      --text3: rgba(0,0,0,0.3);
-    }
-    .total-bar { background: var(--bg); }
-    .install-tip { background: #f0f7e0; border-color: rgba(100,150,0,0.2); }
-    .install-tip .it-text { color: rgba(80,120,0,0.8); }
-    .inp { background: var(--surface2); }
-  }
-</style>
+        #logoInput {
+            display: none;
+        }
+
+        .header-text {
+            margin-bottom: 20px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .header-divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            margin: 12px auto 16px;
+        }
+
+        .progress-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 50px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .progress-step {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        .progress-step:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .progress-step.active {
+            background: var(--primary);
+            color: var(--accent-light);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 10px rgba(212, 165, 116, 0.1);
+        }
+
+        .progress-step.completed {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: var(--shadow-lg);
+            animation: fadeIn 0.5s ease-out;
+            border: 1px solid rgba(212, 165, 116, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-section h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 28px;
+            color: var(--primary);
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            position: relative;
+        }
+
+        .form-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            height: 2px;
+            background: var(--primary);
+            width: 0;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--border-light);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(212, 165, 116, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+        }
+
+        .measurement-card {
+            background: linear-gradient(135deg, var(--border-light) 0%, white 100%);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .measurement-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .measurement-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .calc-result {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            margin: 16px 0;
+        }
+
+        .calc-result-label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .calc-result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .room-preview {
+            background: var(--border-light);
+            padding: 24px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .room-preview svg {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 32px 28px;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 8px 24px rgba(26, 54, 93, 0.2);
+        }
+
+        .summary-box h3 {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-box .value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .signature-pad {
+            border: 2px dashed var(--accent);
+            border-radius: 8px;
+            background: var(--border-light);
+            cursor: crosshair;
+            display: block;
+            width: 100%;
+            height: 180px;
+            margin-top: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .signature-pad:hover {
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .signature-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .signature-actions button {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 12px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+            justify-content: space-between;
+        }
+
+        button {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(26, 54, 93, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            background: var(--border-light);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 4px 12px rgba(39, 103, 73, 0.2);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(39, 103, 73, 0.3);
+        }
+
+        /* Document Preview Styles */
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .result-header .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            margin: 0 auto 20px;
+        }
+
+        .result-header h2 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .document {
+            background: white;
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 50px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .doc-company {
+            flex: 1;
+        }
+
+        .doc-company-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .doc-company-details {
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .doc-number {
+            text-align: right;
+        }
+
+        .doc-number-label {
+            font-size: 11px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .doc-number-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .doc-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 30px 0;
+            letter-spacing: 1px;
+        }
+
+        .doc-section {
+            margin-bottom: 24px;
+        }
+
+        .doc-section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            background: var(--primary);
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .doc-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .doc-row-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .doc-row-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .signature-section {
+            margin-top: 50px;
+            padding-top: 50px;
+            border-top: 2px solid var(--accent);
+        }
+
+        .signature-block {
+            margin-top: 20px;
+        }
+
+        .signature-line {
+            border-top: 2px solid var(--text-primary);
+            margin-bottom: 8px;
+            min-height: 50px;
+        }
+
+        .signature-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row, .form-row-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .form-container {
+                padding: 30px;
+            }
+
+            .document {
+                padding: 30px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .step {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <div class="header-top">
-      <span class="logo">Е-Монтаж</span>
-      <button class="reset-btn" onclick="resetAll()">Очистити</button>
-    </div>
-    <h1>Калькулятор</h1>
-  </div>
+    <div class="container">
+        <div class="header">
+            <div class="header-text">
+                <div class="logo-upload">
+                    <div class="logo-placeholder" onclick="document.getElementById('logoInput').click()">
+                        <div id="logoDisplay">
+                            <span>Завантажити<br>логотип</span>
+                        </div>
+                    </div>
+                    <input type="file" id="logoInput" accept="image/*">
+                </div>
 
-  <div class="tabs">
-    <div class="tab active" id="tabn-laminat" onclick="switchTab('laminat')">Ламінат</div>
-    <div class="tab" id="tabn-dveri" onclick="switchTab('dveri')">Двері</div>
-    <div class="tab" id="tabn-extras" onclick="switchTab('extras')">Знижки</div>
-    <div class="tab" id="tabn-info" onclick="switchTab('info')">Інфо</div>
-  </div>
-
-  <div class="content">
-
-    <div class="section active" id="tab-laminat">
-      <div class="group">
-        <div class="group-label">Розміри кімнат (м)</div>
-        <div class="card">
-          <div class="field">
-            <div class="field-info"><div class="field-name">Кімната 1</div></div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="r1w" placeholder="0" min="0" step="0.1" inputmode="decimal" oninput="calc()">
-              <span class="x-sep">×</span>
-              <input class="inp" type="number" id="r1h" placeholder="0" min="0" step="0.1" inputmode="decimal" oninput="calc()">
+                <div class="header-subtitle">Професійна система розрахунків та документування</div>
+                <div class="header-divider"></div>
             </div>
-          </div>
-          <div class="field">
-            <div class="field-info"><div class="field-name">Кімната 2</div></div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="r2w" placeholder="0" min="0" step="0.1" inputmode="decimal" oninput="calc()">
-              <span class="x-sep">×</span>
-              <input class="inp" type="number" id="r2h" placeholder="0" min="0" step="0.1" inputmode="decimal" oninput="calc()">
-            </div>
-          </div>
-          <div class="field">
-            <div class="field-info"><div class="field-name">Кімната 3</div></div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="r3w" placeholder="0" min="0" step="0.1" inputmode="decimal" oninput="calc()">
-              <span class="x-sep">×</span>
-              <input class="inp" type="number" id="r3h" placeholder="0" min="0" step="0.1" inputmode="decimal" oninput="calc()">
-            </div>
-          </div>
-          <div class="field">
-            <div class="field-info"><div class="field-name">Кімната 4</div></div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="r4w" placeholder="0" min="0" step="0.1" inputmode="decimal" oninput="calc()">
-              <span class="x-sep">×</span>
-              <input class="inp" type="number" id="r4h" placeholder="0" min="0" step="0.1" inputmode="decimal" oninput="calc()">
-            </div>
-          </div>
         </div>
-      </div>
 
-      <div class="group">
-        <div class="group-label">Плінтуси</div>
-        <div class="card">
-          <div class="field">
-            <div class="field-info">
-              <div class="field-name">Периметр</div>
-              <div class="field-hint">40 грн / п.м.</div>
-            </div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="plintus" placeholder="0" min="0" step="0.5" inputmode="decimal" oninput="calc()">
-              <span class="unit">п.м.</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        <div class="progress-bar" id="progressBar"></div>
 
-      <div class="group">
-        <div class="group-label">Додатково</div>
-        <div class="card">
-          <div class="toggle" onclick="tog('diag')">
-            <div class="toggle-info">
-              <div class="toggle-name">Діагональне укладання</div>
-              <div class="toggle-price">+50 грн/м²</div>
+        <!-- Step 1: Дані компанії -->
+        <div class="step" id="step1">
+            <div class="form-container">
+                <div class="form-section">
+                    <h2>🏢 Дані компанії</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Назва компанії</label>
+                            <input type="text" id="shopName" placeholder="ПП 'Будівельні матеріали'">
+                        </div>
+                        <div class="form-group">
+                            <label>Телефон</label>
+                            <input type="tel" id="shopPhone" placeholder="+38 (068) 123-45-67">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="shopEmail" placeholder="info@company.ua">
+                        </div>
+                        <div class="form-group">
+                            <label>Місто</label>
+                            <input type="text" id="shopCity" placeholder="Львів">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Адреса</label>
+                        <input type="text" id="shopAddress" placeholder="вул. Вулиця, 123">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="resetForm()">Очистити</button>
+                    <button class="btn-primary" onclick="nextStep()">Продовжити →</button>
+                </div>
             </div>
-            <div class="switch" id="sw-diag"></div>
-          </div>
-          <div class="toggle" onclick="tog('vyrivn')">
-            <div class="toggle-info">
-              <div class="toggle-name">Вирівнювання основи</div>
-              <div class="toggle-price">+80 грн/м²</div>
-            </div>
-            <div class="switch" id="sw-vyrivn"></div>
-          </div>
-          <div class="toggle" onclick="tog('dem_l')">
-            <div class="toggle-info">
-              <div class="toggle-name">Демонтаж старої підлоги</div>
-              <div class="toggle-price">+50 грн/м²</div>
-            </div>
-            <div class="switch" id="sw-dem_l"></div>
-          </div>
         </div>
-      </div>
+
+        <!-- Step 2: Замовник -->
+        <div class="step hidden" id="step2">
+            <div class="form-container">
+                <div class="form-section">
+                    <h2>📋 Дані замовника</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ПІБ замовника</label>
+                            <input type="text" id="clientName" placeholder="Іван Петренко">
+                        </div>
+                        <div class="form-group">
+                            <label>Телефон</label>
+                            <input type="tel" id="clientPhone" placeholder="+38 (097) 123-45-67">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Місто об'єкту</label>
+                            <input type="text" id="clientCity" placeholder="Львів">
+                        </div>
+                        <div class="form-group">
+                            <label>Дата замірів</label>
+                            <input type="date" id="measurementDate">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Адреса об'єкту</label>
+                        <textarea id="clientAddress" placeholder="Повна адреса об'єкту"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ПІБ майстра</label>
+                            <input type="text" id="masterName" placeholder="Петренко Іван">
+                        </div>
+                        <div class="form-group">
+                            <label>Посада майстра</label>
+                            <input type="text" id="masterPosition" placeholder="Майстер-кошторисник">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="prevStep()">← Назад</button>
+                    <button class="btn-primary" onclick="nextStep()">Продовжити →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Розрахунки -->
+        <div class="step hidden" id="step3">
+            <div class="form-container">
+                <div class="form-section">
+                    <h2>📐 Розрахунок матеріалів</h2>
+                    
+                    <div class="measurement-card">
+                        <label style="margin-bottom: 16px; display: block;">Параметри приміщення</label>
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label>Довжина (м)</label>
+                                <input type="number" id="roomLength" placeholder="5.0" min="0" step="0.1" oninput="updateCalculations()">
+                            </div>
+                            <div class="form-group">
+                                <label>Ширина (м)</label>
+                                <input type="number" id="roomWidth" placeholder="4.0" min="0" step="0.1" oninput="updateCalculations()">
+                            </div>
+                            <div class="form-group">
+                                <label>Кількість кімнат</label>
+                                <input type="number" id="roomCount" placeholder="1" min="1" step="1" value="1" oninput="updateCalculations()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="measurement-grid">
+                        <div class="calc-result">
+                            <div class="calc-result-label">Площа підлоги</div>
+                            <div class="calc-result-value" id="floorArea">0 м²</div>
+                        </div>
+                        <div class="calc-result">
+                            <div class="calc-result-label">Довжина плінтуса</div>
+                            <div class="calc-result-value" id="baseboardLength">0 п.м</div>
+                        </div>
+                    </div>
+
+                    <div class="room-preview">
+                        <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+                            <rect id="roomRect" x="60" y="40" width="200" height="160" fill="none" stroke="#1a365d" stroke-width="2" rx="4"/>
+                            <!-- Baseboards -->
+                            <line x1="60" y1="40" x2="60" y2="200" stroke="#d4a574" stroke-width="5" stroke-dasharray="4,4" opacity="0.7"/>
+                            <line x1="60" y1="40" x2="260" y2="40" stroke="#d4a574" stroke-width="5" stroke-dasharray="4,4" opacity="0.7"/>
+                            <line x1="260" y1="40" x2="260" y2="200" stroke="#d4a574" stroke-width="5" stroke-dasharray="4,4" opacity="0.7"/>
+                            <line x1="60" y1="200" x2="260" y2="200" stroke="#d4a574" stroke-width="5" stroke-dasharray="4,4" opacity="0.7"/>
+                            <text x="160" y="130" text-anchor="middle" font-size="14" fill="#4a5568" id="roomLabel">5м × 4м</text>
+                        </svg>
+                    </div>
+
+                    <div class="form-section" style="margin-top: 40px;">
+                        <h2>💵 Ціни матеріалів</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Ціна підлоги (грн/м²)</label>
+                                <input type="number" id="floorPrice" placeholder="250" min="0" step="1" oninput="updateCalculations()">
+                            </div>
+                            <div class="form-group">
+                                <label>Ціна плінтуса (грн/п.м)</label>
+                                <input type="number" id="baseboardPrice" placeholder="45" min="0" step="1" oninput="updateCalculations()">
+                            </div>
+                        </div>
+
+                        <div class="measurement-grid">
+                            <div class="calc-result">
+                                <div class="calc-result-label">Вартість підлоги</div>
+                                <div class="calc-result-value" id="floorCost">0 грн</div>
+                            </div>
+                            <div class="calc-result">
+                                <div class="calc-result-label">Вартість плінтуса</div>
+                                <div class="calc-result-value" id="baseboardCost">0 грн</div>
+                            </div>
+                        </div>
+
+                        <div class="summary-box">
+                            <h3>Загальна вартість робіт</h3>
+                            <div class="value" id="totalCost">0 грн</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="prevStep()">← Назад</button>
+                    <button class="btn-primary" onclick="nextStep()">Продовжити →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Підпис майстра -->
+        <div class="step hidden" id="step4">
+            <div class="form-container">
+                <div class="form-section">
+                    <h2>✍️ Підпис майстра</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">
+                        Власноручно підпишіть бланк замірів нижче для підтвердження точності замірів
+                    </p>
+                    <canvas id="masterSignature" class="signature-pad"></canvas>
+                    <div class="signature-actions">
+                        <button class="btn-secondary" onclick="clearSignature('masterSignature')">↻ Очистити</button>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 24px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: normal; text-transform: none;">
+                            <input type="checkbox" id="acceptTerms" style="width: auto;">
+                            <span style="font-size: 14px;">Я підтверджую точність усіх замірів та розрахунків</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn-secondary" onclick="prevStep()">← Назад</button>
+                    <button class="btn-success" onclick="nextStep()" id="finalBtn">Завершити ✓</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Готовий бланк -->
+        <div class="step hidden" id="step5">
+            <div class="form-container">
+                <div class="result-header">
+                    <div class="success-icon">✓</div>
+                    <h2>Бланк замірів створено успішно!</h2>
+                    <p style="color: var(--text-secondary); font-size: 14px;">Документ готовий до друку або сохранення у PDF</p>
+                </div>
+
+                <!-- Document -->
+                <div class="document" id="documentPrint">
+                    <div class="doc-header">
+                        <div class="doc-company">
+                            <div class="doc-company-name" id="docShopName">-</div>
+                            <div class="doc-company-details" id="docShopDetails">-</div>
+                        </div>
+                        <div class="doc-number">
+                            <div class="doc-number-label">Бланк №</div>
+                            <div class="doc-number-value" id="docEstimateNo">0001</div>
+                        </div>
+                    </div>
+
+                    <div class="doc-title">БЛАНК ЗАМІРІВ ТА РОЗРАХУНКІВ</div>
+
+                    <div class="doc-section">
+                        <div class="doc-section-title">Замовник</div>
+                        <div class="doc-row">
+                            <span class="doc-row-label">ПІБ:</span>
+                            <span class="doc-row-value" id="docClientName">-</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-row-label">Адреса об'єкту:</span>
+                            <span class="doc-row-value" id="docClientAddress">-</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-row-label">Телефон:</span>
+                            <span class="doc-row-value" id="docClientPhone">-</span>
+                        </div>
+                    </div>
+
+                    <div class="doc-section">
+                        <div class="doc-section-title">Параметри замірів</div>
+                        <div class="doc-row">
+                            <span class="doc-row-label">Кількість кімнат:</span>
+                            <span class="doc-row-value" id="docRoomCount">-</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-row-label">Площа підлоги:</span>
+                            <span class="doc-row-value" id="docFloorArea">-</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-row-label">Довжина плінтуса:</span>
+                            <span class="doc-row-value" id="docBaseboardLength">-</span>
+                        </div>
+                    </div>
+
+                    <div class="doc-section">
+                        <div class="doc-section-title">Кошторис вартості</div>
+                        <div class="doc-row">
+                            <span class="doc-row-label">Підлога (м² × ₴):</span>
+                            <span class="doc-row-value" id="docFloorCalc">-</span>
+                        </div>
+                        <div class="doc-row">
+                            <span class="doc-row-label">Плінтус (п.м × ₴):</span>
+                            <span class="doc-row-value" id="docBaseboardCalc">-</span>
+                        </div>
+                        <div class="doc-row" style="background: #f7fafc; padding: 12px 0; font-weight: bold;">
+                            <span class="doc-row-label">РАЗОМ:</span>
+                            <span class="doc-row-value" style="color: var(--primary); font-size: 16px;" id="docTotalCost">0 грн</span>
+                        </div>
+                    </div>
+
+                    <div class="signature-section">
+                        <div class="signature-block">
+                            <div style="margin-bottom: 20px;">
+                                <div class="signature-line" id="masterSignatureDisplay" style="min-height: 60px;"></div>
+                                <div class="signature-label" id="docMasterLabel" style="margin-top: 8px;">Майстер: -</div>
+                            </div>
+                            <div style="margin-top: 4px; padding-top: 8px; border-top: 1px solid var(--border);">
+                                <div class="signature-label">Підпис _________________</div>
+                                <div class="signature-label" style="margin-top: 4px;">Дата: <span id="docDate">-</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons">
+                    <button class="btn-primary" onclick="printDocument()">🖨️ Друк</button>
+                    <button class="btn-primary" onclick="downloadPDF()">📥 Скачати PDF</button>
+                    <button class="btn-secondary" onclick="startOver()">↺ Новий бланк</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="section" id="tab-dveri">
-      <div class="group">
-        <div class="group-label">Міжкімнатні двері</div>
-        <div class="card">
-          <div class="field">
-            <div class="field-info">
-              <div class="field-name">Стандарт</div>
-              <div class="field-hint">1 600 грн / шт</div>
-            </div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="d_std" placeholder="0" min="0" step="1" inputmode="numeric" oninput="calc()">
-              <span class="unit">шт</span>
-            </div>
-          </div>
-          <div class="field">
-            <div class="field-info">
-              <div class="field-name">З розширювачем</div>
-              <div class="field-hint">1 900 грн / шт</div>
-            </div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="d_ext" placeholder="0" min="0" step="1" inputmode="numeric" oninput="calc()">
-              <span class="unit">шт</span>
-            </div>
-          </div>
-          <div class="field">
-            <div class="field-info">
-              <div class="field-name">Розсувні (купе)</div>
-              <div class="field-hint">2 200 грн / шт</div>
-            </div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="d_kupe" placeholder="0" min="0" step="1" inputmode="numeric" oninput="calc()">
-              <span class="unit">шт</span>
-            </div>
-          </div>
-          <div class="field">
-            <div class="field-info">
-              <div class="field-name">Демонтаж старих</div>
-              <div class="field-hint">400 грн / шт</div>
-            </div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="d_dem" placeholder="0" min="0" step="1" inputmode="numeric" oninput="calc()">
-              <span class="unit">шт</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
 
-      <div class="group">
-        <div class="group-label">Вхідні двері</div>
-        <div class="card">
-          <div class="field">
-            <div class="field-info">
-              <div class="field-name">Встановлення</div>
-              <div class="field-hint">2 800 грн / шт</div>
-            </div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="d_vhid" placeholder="0" min="0" step="1" inputmode="numeric" oninput="calc()">
-              <span class="unit">шт</span>
-            </div>
-          </div>
-          <div class="field">
-            <div class="field-info">
-              <div class="field-name">Демонтаж + встановлення</div>
-              <div class="field-hint">3 400 грн / шт</div>
-            </div>
-            <div class="field-inputs">
-              <input class="inp" type="number" id="d_vhid_dem" placeholder="0" min="0" step="1" inputmode="numeric" oninput="calc()">
-              <span class="unit">шт</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        document.getElementById('measurementDate').valueAsDate = new Date();
+        initSignaturePad();
+        updateProgressBar();
 
-    <div class="section" id="tab-extras">
-      <div class="group">
-        <div class="group-label">Доплати</div>
-        <div class="card">
-          <div class="toggle" onclick="tog('poza')">
-            <div class="toggle-info">
-              <div class="toggle-name">Виїзд за місто</div>
-              <div class="toggle-price">+500 грн</div>
-            </div>
-            <div class="switch" id="sw-poza"></div>
-          </div>
-          <div class="toggle" onclick="tog('termin')">
-            <div class="toggle-info">
-              <div class="toggle-name">Термінове замовлення</div>
-              <div class="toggle-price">+15% до загальної суми</div>
-            </div>
-            <div class="switch" id="sw-termin"></div>
-          </div>
-        </div>
-      </div>
-      <div class="group">
-        <div class="group-label">Знижки</div>
-        <div class="card">
-          <div class="toggle" onclick="tog('nashy')">
-            <div class="toggle-info">
-              <div class="toggle-name">Матеріал з нашого магазину</div>
-              <div class="toggle-price">−5%</div>
-            </div>
-            <div class="switch" id="sw-nashy"></div>
-          </div>
-          <div class="toggle" onclick="tog('kvart')">
-            <div class="toggle-info">
-              <div class="toggle-name">Пакет "Квартира під ключ"</div>
-              <div class="toggle-price">−10%</div>
-            </div>
-            <div class="switch" id="sw-kvart"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+        // Logo upload
+        document.getElementById('logoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    const display = document.getElementById('logoDisplay');
+                    display.innerHTML = '';
+                    display.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
-    <div class="section" id="tab-info">
-      <div class="install-tip">
-        <div class="it-title">Зберегти на екран iPhone</div>
-        <div class="it-text">Натисни кнопку "Поділитися" (квадрат зі стрілкою) → "На екран додому" → "Додати". Застосунок з'явиться як іконка на робочому столі.</div>
-      </div>
-      <div class="hint-box">
-        <p><strong>Правило ціни:</strong> Ніколи не знижуй одразу. Спочатку поясни що входить — гарантія 12 місяців, чистота, точні заміри, вивіз сміття. Якщо тиснуть — пропонуй прибрати послугу, а не знижувати ціну.</p>
-      </div>
-      <div class="hint-box">
-        <p><strong>Ламінат:</strong> завжди додавай 10% на відходи при замовленні матеріалу. При діагональному — 15%.</p>
-      </div>
-      <div class="hint-box">
-        <p><strong>Нестандартна стіна:</strong> товщина понад 90 мм — обирай "З розширювачем". Перевіряй рулеткою на місці.</p>
-      </div>
-      <div class="hint-box">
-        <p><strong>Виробіток за день:</strong> удвох реально закрити 2–3 двері або 25–35 м² ламінату.</p>
-      </div>
-    </div>
+        function initSignaturePad() {
+            const canvas = document.getElementById('masterSignature');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
 
-  </div>
+            let isDrawing = false;
 
-  <div class="total-bar">
-    <div class="total-rows">
-      <div class="total-row" id="row-lam"><span>Ламінат + плінтуси</span><span id="s-lam">0 грн</span></div>
-      <div class="total-row" id="row-dv"><span>Двері</span><span id="s-dv">0 грн</span></div>
-      <div class="total-row" id="row-ex"><span>Доплати / знижки</span><span id="s-ex">0 грн</span></div>
-    </div>
-    <div class="total-main">
-      <span class="total-label">Разом</span>
-      <span class="total-amount" id="total">0 грн</span>
-    </div>
-  </div>
-</div>
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            });
 
-<script>
-const state = {};
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.strokeStyle = '#1a365d';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.stroke();
+            });
 
-function tog(key) {
-  state[key] = !state[key];
-  const sw = document.getElementById('sw-' + key);
-  if (sw) sw.classList.toggle('on', !!state[key]);
-  calc();
-}
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mouseout', () => isDrawing = false);
 
-function v(id) { return parseFloat(document.getElementById(id)?.value) || 0; }
-function s(id, val) { document.getElementById(id).textContent = val; }
-function fmt(n) { return Math.round(n).toLocaleString('uk-UA') + ' грн'; }
+            // Touch support
+            canvas.addEventListener('touchstart', (e) => {
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                const touch = e.touches[0];
+                ctx.beginPath();
+                ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            });
 
-function calc() {
-  const area = v('r1w')*v('r1h') + v('r2w')*v('r2h') + v('r3w')*v('r3h') + v('r4w')*v('r4h');
-  let rate = 150;
-  if (state.diag) rate += 50;
-  let lam = area * rate;
-  if (state.vyrivn) lam += area * 80;
-  if (state.dem_l) lam += area * 50;
-  lam += v('plintus') * 40;
+            canvas.addEventListener('touchmove', (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                const touch = e.touches[0];
+                ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                ctx.strokeStyle = '#1a365d';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.stroke();
+            });
 
-  const dv = v('d_std')*1600 + v('d_ext')*1900 + v('d_kupe')*2200 + v('d_dem')*400 + v('d_vhid')*2800 + v('d_vhid_dem')*3400;
+            canvas.addEventListener('touchend', () => isDrawing = false);
+        }
 
-  let extra = 0;
-  if (state.poza) extra += 500;
-  let sub = lam + dv + extra;
-  if (state.termin) sub *= 1.15;
-  if (state.nashy) sub *= 0.95;
-  if (state.kvart) sub *= 0.90;
-  const diff = sub - lam - dv - extra;
+        function clearSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
 
-  s('s-lam', fmt(lam));
-  s('s-dv', fmt(dv));
-  const exTotal = extra + diff;
-  s('s-ex', (exTotal >= 0 ? '+' : '') + fmt(exTotal));
-  s('total', fmt(sub));
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.innerHTML = '';
+            for (let i = 1; i <= totalSteps; i++) {
+                const step = document.createElement('div');
+                step.className = 'progress-step';
+                if (i === currentStep) step.classList.add('active');
+                if (i < currentStep) step.classList.add('completed');
+                step.textContent = i;
+                step.onclick = () => goToStep(i);
+                progressBar.appendChild(step);
+            }
+        }
 
-  document.getElementById('row-lam').classList.toggle('zero', lam === 0);
-  document.getElementById('row-dv').classList.toggle('zero', dv === 0);
-  document.getElementById('row-ex').classList.toggle('zero', exTotal === 0);
-}
+        function showStep(stepNum) {
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepDiv = document.getElementById(`step${i}`);
+                if (stepDiv) {
+                    stepDiv.classList.toggle('hidden', i !== stepNum);
+                }
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('tabn-' + name).classList.add('active');
-  document.getElementById('tab-' + name).classList.add('active');
-}
+        function nextStep() {
+            if (currentStep === 4) {
+                if (!document.getElementById('acceptTerms').checked) {
+                    alert('Будь ласка, підтвердіть точність замірів');
+                    return;
+                }
+                const canvas = document.getElementById('masterSignature');
+                const isCanvasBlank = !canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data.some(channel => channel !== 0);
+                if (isCanvasBlank) {
+                    alert('Будь ласка, підпишіть як майстер');
+                    return;
+                }
+            }
 
-function resetAll() {
-  document.querySelectorAll('input[type=number]').forEach(i => i.value = '');
-  ['diag','vyrivn','dem_l','poza','termin','nashy','kvart'].forEach(k => {
-    state[k] = false;
-    const sw = document.getElementById('sw-' + k);
-    if (sw) sw.classList.remove('on');
-  });
-  calc();
-}
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateProgressBar();
+                showStep(currentStep);
+                if (currentStep === 5) generateDocument();
+            }
+        }
 
-calc();
-</script>
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateProgressBar();
+                showStep(currentStep);
+            }
+        }
+
+        function goToStep(stepNum) {
+            if (stepNum < currentStep) {
+                currentStep = stepNum;
+                updateProgressBar();
+                showStep(currentStep);
+            }
+        }
+
+        function updateCalculations() {
+            const length = parseFloat(document.getElementById('roomLength').value) || 0;
+            const width = parseFloat(document.getElementById('roomWidth').value) || 0;
+            const count = parseInt(document.getElementById('roomCount').value) || 1;
+            const floorPrice = parseFloat(document.getElementById('floorPrice').value) || 0;
+            const baseboardPrice = parseFloat(document.getElementById('baseboardPrice').value) || 0;
+
+            const floorArea = Math.round(length * width * count * 100) / 100;
+            const baseboardLength = Math.round((length * 2 + width * 2) * count * 100) / 100;
+            const floorCost = Math.round(floorArea * floorPrice);
+            const baseboardCost = Math.round(baseboardLength * baseboardPrice);
+            const totalCost = floorCost + baseboardCost;
+
+            document.getElementById('floorArea').textContent = floorArea + ' м²';
+            document.getElementById('baseboardLength').textContent = baseboardLength + ' п.м';
+            document.getElementById('floorCost').textContent = floorCost.toLocaleString('uk-UA') + ' грн';
+            document.getElementById('baseboardCost').textContent = baseboardCost.toLocaleString('uk-UA') + ' грн';
+            document.getElementById('totalCost').textContent = totalCost.toLocaleString('uk-UA') + ' грн';
+            document.getElementById('roomLabel').textContent = length + 'м × ' + width + 'м';
+        }
+
+        function generateDocument() {
+            const shopName = document.getElementById('shopName').value || 'Компанія';
+            const clientName = document.getElementById('clientName').value || '-';
+            const masterName = document.getElementById('masterName').value || '-';
+            const masterPosition = document.getElementById('masterPosition').value || 'Майстер';
+            const measurementDate = document.getElementById('measurementDate').value || new Date().toLocaleDateString('uk-UA');
+            const roomCount = document.getElementById('roomCount').value || '1';
+
+            document.getElementById('docShopName').textContent = shopName;
+            document.getElementById('docClientName').textContent = clientName;
+            document.getElementById('docClientAddress').textContent = document.getElementById('clientAddress').value || '-';
+            document.getElementById('docClientPhone').textContent = document.getElementById('clientPhone').value || '-';
+            document.getElementById('docRoomCount').textContent = roomCount;
+            document.getElementById('docFloorArea').textContent = document.getElementById('floorArea').textContent;
+            document.getElementById('docBaseboardLength').textContent = document.getElementById('baseboardLength').textContent;
+            
+            const floorArea = parseFloat(document.getElementById('roomLength').value) * parseFloat(document.getElementById('roomWidth').value) * roomCount || 0;
+            const floorPrice = parseFloat(document.getElementById('floorPrice').value) || 0;
+            const baseboardLength = ((parseFloat(document.getElementById('roomLength').value) * 2 + parseFloat(document.getElementById('roomWidth').value) * 2) * roomCount) || 0;
+            const baseboardPrice = parseFloat(document.getElementById('baseboardPrice').value) || 0;
+
+            document.getElementById('docFloorCalc').textContent = floorArea.toFixed(2) + ' м² × ' + floorPrice + ' ₴ = ' + Math.round(floorArea * floorPrice) + ' грн';
+            document.getElementById('docBaseboardCalc').textContent = baseboardLength.toFixed(2) + ' п.м × ' + baseboardPrice + ' ₴ = ' + Math.round(baseboardLength * baseboardPrice) + ' грн';
+            
+            document.getElementById('docTotalCost').textContent = document.getElementById('totalCost').textContent;
+            document.getElementById('docMasterLabel').textContent = `Майстер: ${masterName} (${masterPosition})`;
+            document.getElementById('docDate').textContent = measurementDate;
+            document.getElementById('docEstimateNo').textContent = '0001-' + new Date().getTime().toString().slice(-5);
+            document.getElementById('docShopDetails').textContent = `${document.getElementById('shopCity').value} | ☎ ${document.getElementById('shopPhone').value} | ✉ ${document.getElementById('shopEmail').value}`;
+
+            const masterSig = document.getElementById('masterSignature');
+            document.getElementById('masterSignatureDisplay').innerHTML = '';
+            document.getElementById('masterSignatureDisplay').appendChild(masterSig.cloneNode(true));
+        }
+
+        function printDocument() {
+            window.print();
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('documentPrint');
+            const opt = {
+                margin: 15,
+                filename: 'blank-zamiriv_' + new Date().getTime() + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function startOver() {
+            resetForm();
+            currentStep = 1;
+            updateProgressBar();
+            showStep(currentStep);
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input, textarea').forEach(el => el.value = '');
+            document.getElementById('measurementDate').valueAsDate = new Date();
+            document.getElementById('roomCount').value = '1';
+            clearSignature('masterSignature');
+            document.getElementById('acceptTerms').checked = false;
+            updateCalculations();
+        }
+    </script>
 </body>
 </html>
