@@ -26,6 +26,8 @@
             --border: #e5e7eb;
             --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --danger: #ef4444;
+            --success: #10b981;
         }
 
         html, body {
@@ -75,6 +77,7 @@
             display: flex;
             gap: 30px;
             align-items: center;
+            flex: 1;
         }
 
         .nav-link {
@@ -82,6 +85,7 @@
             text-decoration: none;
             font-weight: 500;
             font-size: 14px;
+            cursor: pointer;
             transition: color 0.3s ease;
         }
 
@@ -89,9 +93,78 @@
             color: var(--accent-blue);
         }
 
-        .auth-buttons {
+        .nav-link.active {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .auth-section {
             display: flex;
             gap: 12px;
+            align-items: center;
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-teal) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            min-width: 200px;
+            margin-top: 8px;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            color: var(--text-primary);
+            text-decoration: none;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s ease;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-light);
+            color: var(--accent-blue);
         }
 
         .btn-secondary {
@@ -130,21 +203,33 @@
             box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
         }
 
+        /* Page Container */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
-            padding: 80px 0;
+            padding: 100px 0;
             margin-bottom: 60px;
-        }
-
-        .hero-content {
             text-align: center;
         }
 
         .hero h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 52px;
+            font-size: 56px;
             font-weight: 900;
             margin-bottom: 20px;
             letter-spacing: -1px;
@@ -186,10 +271,6 @@
             font-family: inherit;
         }
 
-        .search-box input::placeholder {
-            color: var(--text-light);
-        }
-
         .search-box button {
             padding: 10px 24px;
             background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-teal) 100%);
@@ -206,59 +287,41 @@
             transform: scale(1.05);
         }
 
-        /* Filters */
-        .filters-section {
-            margin-bottom: 50px;
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
         }
 
-        .filters-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 40px;
             margin-bottom: 16px;
         }
 
-        .filters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .filter-group {
-            background: var(--bg-white);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .filter-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-secondary);
+        .feature-card h3 {
             margin-bottom: 12px;
-        }
-
-        .filter-group select,
-        .filter-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 13px;
-            font-family: inherit;
             color: var(--text-primary);
         }
 
-        .filter-group select:focus,
-        .filter-group input:focus {
-            outline: none;
-            border-color: var(--accent-blue);
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 13px;
         }
 
         /* Masters Grid */
@@ -300,7 +363,6 @@
             display: flex;
             gap: 12px;
             margin-bottom: 16px;
-            align-items: flex-start;
         }
 
         .master-avatar {
@@ -323,7 +385,6 @@
             color: var(--accent-blue);
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .master-rating {
@@ -331,274 +392,200 @@
             gap: 8px;
             align-items: center;
             margin-bottom: 12px;
-        }
-
-        .stars {
-            color: var(--accent-gold);
-            font-size: 14px;
-        }
-
-        .rating-text {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .master-description {
             font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            line-height: 1.5;
         }
 
-        .master-tags {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            background: var(--bg-light);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            color: var(--accent-blue);
-            font-weight: 600;
+        .master-rating span:first-child {
+            color: var(--accent-gold);
         }
 
         .master-price {
             font-size: 18px;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 16px;
+            margin: 12px 0;
         }
 
-        .master-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .btn-small {
+        .master-btn {
+            width: 100%;
             padding: 10px;
-            border: 1px solid var(--border);
-            background: transparent;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .btn-small:hover {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-        }
-
-        .btn-small.primary {
             background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-teal) 100%);
             border: none;
             color: white;
-            grid-column: 1 / -1;
-        }
-
-        .btn-small.primary:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 0;
-            animation: slideUp 0.3s ease;
-            position: relative;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 36px;
-            height: 36px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .modal-close:hover {
-            background: var(--accent-blue);
-            color: white;
-            border-color: var(--accent-blue);
-        }
-
-        .modal-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-        }
-
-        .modal-body {
-            padding: 40px;
-        }
-
-        .modal-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .modal-subtitle {
-            font-size: 14px;
-            color: var(--accent-blue);
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .modal-rating {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 24px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .rating-item {
-            text-align: center;
-        }
-
-        .rating-number {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .rating-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .modal-about {
-            margin-bottom: 24px;
-        }
-
-        .modal-about h3 {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .modal-about p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .modal-services {
-            margin-bottom: 24px;
-        }
-
-        .modal-services h3 {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .service-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 13px;
-        }
-
-        .service-item:last-child {
-            border-bottom: none;
-        }
-
-        .service-price {
-            font-weight: 700;
-            color: var(--accent-gold);
-        }
-
-        .modal-footer {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-        }
-
-        .modal-footer button {
-            padding: 12px;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 700;
             font-size: 13px;
             transition: all 0.3s ease;
-            font-family: inherit;
         }
 
-        .modal-footer .btn-secondary {
-            grid-column: 1 / -1;
+        .master-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .form-link a {
+            color: var(--accent-blue);
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        /* Profile */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-gold);
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 40px;
+        }
+
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+        }
+
+        .profile-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .profile-value {
+            color: var(--text-primary);
+        }
+
+        /* Orders */
+        .order-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-info h4 {
+            margin-bottom: 8px;
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .order-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .order-status.completed {
+            background: #d1fae5;
+            color: #065f46;
         }
 
         /* Footer */
@@ -636,6 +623,7 @@
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             font-size: 13px;
+            cursor: pointer;
             transition: color 0.3s ease;
         }
 
@@ -649,6 +637,90 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 12px;
             color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 40px;
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            background: var(--bg-light);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid var(--success);
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #7f1d1d;
+            border-left: 4px solid var(--danger);
         }
 
         @media (max-width: 768px) {
@@ -668,40 +740,13 @@
                 grid-template-columns: 1fr;
             }
 
-            .filters {
-                grid-template-columns: 1fr;
+            .form-container {
+                padding: 20px;
             }
 
             .modal-content {
-                max-width: 100%;
+                padding: 20px;
             }
-
-            .modal-body {
-                padding: 24px;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
-        }
-
-        .no-results h2 {
-            font-size: 24px;
-            margin-bottom: 12px;
-            color: var(--text-primary);
         }
     </style>
 </head>
@@ -710,43 +755,83 @@
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <div class="logo" onclick="window.location.reload()">MasterPlace</div>
+                <div class="logo" onclick="navigateTo('home')">MasterPlace</div>
                 <nav class="nav">
-                    <a href="#" class="nav-link">Про нас</a>
-                    <a href="#" class="nav-link">Для майстрів</a>
-                    <a href="#" class="nav-link">Контакти</a>
+                    <a class="nav-link active" onclick="navigateTo('home')">Головна</a>
+                    <a class="nav-link" onclick="navigateTo('masters')">Знайти майстра</a>
+                    <a class="nav-link" onclick="navigateTo('about')">Про нас</a>
+                    <a class="nav-link" onclick="navigateTo('contact')">Контакти</a>
                 </nav>
-                <div class="auth-buttons">
-                    <button class="btn-secondary">Вхід</button>
-                    <button class="btn-primary">Реєстрація</button>
+                <div class="auth-section">
+                    <div id="authButtons" class="auth-section">
+                        <button class="btn-secondary" onclick="navigateTo('login')">Вхід</button>
+                        <button class="btn-primary" onclick="navigateTo('register')">Реєстрація</button>
+                    </div>
+                    <div id="userSection" style="display: none;" class="user-menu">
+                        <button class="user-btn" onclick="toggleUserMenu()">
+                            <div class="user-avatar" id="userInitials">У</div>
+                            <span>Меню</span>
+                        </button>
+                        <div class="dropdown-menu" id="userDropdown">
+                            <a class="dropdown-item" onclick="navigateTo('profile')">👤 Мій профіль</a>
+                            <a class="dropdown-item" onclick="navigateTo('orders')">📋 Мої замовлення</a>
+                            <a class="dropdown-item" onclick="navigateTo('settings')">⚙️ Налаштування</a>
+                            <a class="dropdown-item" onclick="logout()">🚪 Вийти</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
+    <!-- Pages -->
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <div class="hero">
+            <div class="container">
                 <h1>Знайди кращого <span>майстра</span></h1>
                 <p>Професійні майстри для будь-яких робіт - від ремонту до дизайну</p>
-                
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Ремонт, дизайн, будівництво..." oninput="filterMasters()">
-                    <button onclick="filterMasters()">🔍 Пошук</button>
+                    <input type="text" placeholder="Ремонт, дизайн, будівництво..." id="homeSearch">
+                    <button onclick="searchAndNavigate()">🔍 Пошук</button>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Main Content -->
-    <main>
         <div class="container">
-            <!-- Filters -->
+            <h2 style="margin-bottom: 40px; font-size: 28px; font-weight: 700;">Чому вибирають MasterPlace?</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>Верифіковані майстри</h3>
+                    <p>Всі майстри проходять перевірку якості та мають рейтинги від реальних замовників</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Безпечні платежі</h3>
+                    <p>Гарантійне утримання коштів до завершення роботи забезпечує вашу безпеку</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Якість гарантована</h3>
+                    <p>Якщо ви задоволені результатом - платіть, ні - повне повернення коштів</p>
+                </div>
+            </div>
+
+            <h2 style="margin: 60px 0 40px; font-size: 28px; font-weight: 700;">Популярні майстри</h2>
+            <div class="masters-grid" id="popularMasters"></div>
+        </div>
+    </div>
+
+    <!-- Masters Page -->
+    <div id="masters" class="page">
+        <div class="container" style="padding-top: 40px;">
+            <h1 style="margin-bottom: 40px; font-size: 36px; font-weight: 700;">Знайти майстра</h1>
+
             <div class="filters-section">
-                <div class="filters-title">Фільтри</div>
-                <div class="filters">
-                    <div class="filter-group">
+                <div class="filters-grid">
+                    <div class="form-group">
                         <label>Спеціалізація</label>
                         <select id="specialtyFilter" onchange="filterMasters()">
                             <option value="">Всі спеціальності</option>
@@ -757,7 +842,7 @@
                             <option value="Малювання">Малювання</option>
                         </select>
                     </div>
-                    <div class="filter-group">
+                    <div class="form-group">
                         <label>Мінімальна оцінка</label>
                         <select id="ratingFilter" onchange="filterMasters()">
                             <option value="">Будь-яка</option>
@@ -766,60 +851,271 @@
                             <option value="3.5">3.5+ ⭐</option>
                         </select>
                     </div>
-                    <div class="filter-group">
+                    <div class="form-group">
                         <label>Максимальна ціна (грн/год)</label>
                         <input type="number" id="priceFilter" placeholder="Без ліміту" onchange="filterMasters()">
                     </div>
                 </div>
             </div>
 
-            <!-- Masters Grid -->
-            <div class="masters-grid" id="mastersGrid">
-                <div class="loading">Завантаження майстрів...</div>
+            <div class="masters-grid" id="mastersGrid"></div>
+        </div>
+    </div>
+
+    <!-- Master Detail Page -->
+    <div id="masterDetail" class="page">
+        <div class="container" style="padding: 40px 0;">
+            <button class="btn-secondary" onclick="navigateTo('masters')" style="margin-bottom: 20px;">← Назад</button>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                <div>
+                    <img id="detailImage" src="" alt="" style="width: 100%; border-radius: 12px; margin-bottom: 20px;">
+                </div>
+                <div>
+                    <h1 id="detailName" style="font-size: 32px; font-weight: 700; margin-bottom: 10px;"></h1>
+                    <p id="detailSpecialty" style="color: var(--accent-blue); font-weight: 600; margin-bottom: 20px;"></p>
+                    
+                    <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="detailRating">4.8</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">Оцінка</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="detailReviews">245</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">Відгуків</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="detailJobs">120+</div>
+                                <div style="font-size: 12px; color: var(--text-secondary);">Завершено</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 12px; font-weight: 600;">Про майстра</h3>
+                        <p id="detailAbout" style="color: var(--text-secondary);"></p>
+                    </div>
+
+                    <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 16px; font-weight: 600;">Послуги</h3>
+                        <div id="detailServices"></div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <button class="btn-secondary">💬 Чат</button>
+                        <button class="btn-secondary">☎️ Дзвін</button>
+                        <button class="btn-primary" style="grid-column: 1 / -1;" onclick="openBookingModal()">📅 Забронювати</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Master Detail Modal -->
-    <div class="modal" id="masterModal" onclick="closeMasterModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeMasterModal()">×</button>
-            <img src="" alt="" class="modal-image" id="modalImage">
-            <div class="modal-body">
-                <h2 class="modal-title" id="modalName">Ім'я майстра</h2>
-                <p class="modal-subtitle" id="modalSpecialty">Спеціальність</p>
+    <!-- Login Page -->
+    <div id="login" class="page">
+        <div class="form-container">
+            <h2 class="form-title">Вхід в аккаунт</h2>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="loginPassword" placeholder="••••••••">
+            </div>
+            <button class="btn-primary" style="width: 100%; margin: 20px 0;" onclick="login()">Увійти</button>
+            <div class="form-link">
+                Немаєте аккаунту? <a onclick="navigateTo('register')">Зареєструйтесь</a>
+            </div>
+        </div>
+    </div>
 
-                <div class="modal-rating">
-                    <div class="rating-item">
-                        <div class="rating-number" id="modalRating">4.8</div>
-                        <div class="rating-label">Оцінка</div>
-                    </div>
-                    <div class="rating-item">
-                        <div class="rating-number" id="modalReviews">245</div>
-                        <div class="rating-label">Відгуків</div>
-                    </div>
-                    <div class="rating-item">
-                        <div class="rating-number" id="modalJobs">120+</div>
-                        <div class="rating-label">Завершено</div>
-                    </div>
+    <!-- Register Page -->
+    <div id="register" class="page">
+        <div class="form-container">
+            <h2 class="form-title">Реєстрація</h2>
+            <div class="form-group">
+                <label>ПІБ</label>
+                <input type="text" id="registerName" placeholder="Іван Петренко">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="registerEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="registerPassword" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>Телефон</label>
+                <input type="tel" id="registerPhone" placeholder="+38 (0XX) XXX-XX-XX">
+            </div>
+            <button class="btn-primary" style="width: 100%; margin: 20px 0;" onclick="register()">Зареєструватися</button>
+            <div class="form-link">
+                Вже маєте аккаунт? <a onclick="navigateTo('login')">Увійдіть</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile" class="page">
+        <div class="profile-header">
+            <div class="container">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="" class="profile-avatar">
+                <h1 id="profileNameHeader">Користувач</h1>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="profile-container">
+                <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 700;">Персональні дані</h2>
+                <div class="profile-item">
+                    <span class="profile-label">Ім'я</span>
+                    <span class="profile-value" id="profileName">-</span>
                 </div>
-
-                <div class="modal-about">
-                    <h3>Про майстра</h3>
-                    <p id="modalAbout">Опис діяльності майстра</p>
+                <div class="profile-item">
+                    <span class="profile-label">Email</span>
+                    <span class="profile-value" id="profileEmail">-</span>
                 </div>
-
-                <div class="modal-services">
-                    <h3>Послуги</h3>
-                    <div id="modalServicesList"></div>
+                <div class="profile-item">
+                    <span class="profile-label">Телефон</span>
+                    <span class="profile-value" id="profilePhone">-</span>
                 </div>
-
-                <div class="modal-footer">
-                    <button class="btn-secondary" onclick="sendMessage()">💬 Повідомлення</button>
-                    <button class="btn-secondary" onclick="callMaster()">☎️ Подзвонити</button>
-                    <button class="btn-primary" onclick="bookMaster()">📅 Забронювати</button>
+                <div class="profile-item">
+                    <span class="profile-label">Дата реєстрації</span>
+                    <span class="profile-value" id="profileDate">-</span>
                 </div>
             </div>
+
+            <button class="btn-secondary" onclick="navigateTo('settings')" style="margin-bottom: 40px;">Змінити дані</button>
+        </div>
+    </div>
+
+    <!-- Orders Page -->
+    <div id="orders" class="page">
+        <div class="container" style="padding: 40px 0;">
+            <h1 style="margin-bottom: 30px; font-size: 32px; font-weight: 700;">Мої замовлення</h1>
+
+            <div id="ordersList">
+                <div class="order-card">
+                    <div class="order-info">
+                        <h4>Ремонт квартири в центрі</h4>
+                        <p style="color: var(--text-secondary); font-size: 13px;">Іван Петренко · 15000 грн</p>
+                    </div>
+                    <div class="order-status pending">В процесі</div>
+                </div>
+                <div class="order-card">
+                    <div class="order-info">
+                        <h4>Дизайн інтер'єру</h4>
+                        <p style="color: var(--text-secondary); font-size: 13px;">Марія Коваленко · 8000 грн</p>
+                    </div>
+                    <div class="order-status completed">Завершено</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div id="settings" class="page">
+        <div class="form-container">
+            <h2 class="form-title">Налаштування профіля</h2>
+            <div class="form-group">
+                <label>Ім'я</label>
+                <input type="text" id="settingsName" value="">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="settingsEmail" value="">
+            </div>
+            <div class="form-group">
+                <label>Телефон</label>
+                <input type="tel" id="settingsPhone" value="">
+            </div>
+            <div class="form-group">
+                <label>Новий пароль (залиште порожнім щоб не змінювати)</label>
+                <input type="password" id="settingsPassword" placeholder="••••••••">
+            </div>
+            <button class="btn-primary" style="width: 100%; margin: 20px 0;" onclick="saveSettings()">Зберегти зміни</button>
+        </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <div class="container" style="padding: 60px 0;">
+            <h1 style="margin-bottom: 40px; font-size: 40px; font-weight: 700; text-align: center;">Про MasterPlace</h1>
+            
+            <div style="max-width: 800px; margin: 0 auto; color: var(--text-secondary); line-height: 1.8; font-size: 15px;">
+                <p style="margin-bottom: 20px;">
+                    MasterPlace - це сучасна платформа, яка з'єднує замовників з квалібікованими майстрами різних спеціальностей. Наша місія - зробити пошук фахівця простим, надійним і доступним.
+                </p>
+                <p style="margin-bottom: 20px;">
+                    Ми впевнені, що якість роботи повинна бути пріоритетом, тому всі майстри на платформі проходять ретельну перевірку й мають рейтинги від реальних клієнтів.
+                </p>
+                <p>
+                    З MasterPlace ви отримуєте не просто контакт майстра, а партнера в реалізації вашого проекту з гарантованою якістю виконання.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Page -->
+    <div id="contact" class="page">
+        <div class="container" style="padding: 60px 0;">
+            <h1 style="margin-bottom: 40px; font-size: 40px; font-weight: 700; text-align: center;">Контакти</h1>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1000px; margin: 0 auto;">
+                <div>
+                    <h3 style="margin-bottom: 20px; font-weight: 700;">Зв'яжіться з нами</h3>
+                    <div style="margin-bottom: 20px;">
+                        <p style="color: var(--text-secondary); margin-bottom: 8px;">Телефон</p>
+                        <p style="font-weight: 600;">+38 (067) 123-45-67</p>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <p style="color: var(--text-secondary); margin-bottom: 8px;">Email</p>
+                        <p style="font-weight: 600;">hello@masterplace.ua</p>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-secondary); margin-bottom: 8px;">Адреса</p>
+                        <p style="font-weight: 600;">Львів, вул. Лесі Українки, 15</p>
+                    </div>
+                </div>
+
+                <div class="form-container" style="padding: 24px; box-shadow: var(--shadow);">
+                    <h3 style="margin-bottom: 16px;">Напишіть нам</h3>
+                    <div class="form-group">
+                        <input type="text" placeholder="Ваше ім'я" style="border: 1px solid var(--border); padding: 10px;">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="your@email.com" style="border: 1px solid var(--border); padding: 10px;">
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Ваше повідомлення" style="border: 1px solid var(--border); padding: 10px;"></textarea>
+                    </div>
+                    <button class="btn-primary" style="width: 100%;">Надіслати</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="bookingModal" onclick="closeBookingModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeBookingModal()">×</button>
+            <h2 class="form-title">Забронювати майстра</h2>
+            <div class="form-group">
+                <label>Дата</label>
+                <input type="date">
+            </div>
+            <div class="form-group">
+                <label>Час</label>
+                <input type="time">
+            </div>
+            <div class="form-group">
+                <label>Опис роботи</label>
+                <textarea placeholder="Розповідайте детально про роботу"></textarea>
+            </div>
+            <button class="btn-primary" style="width: 100%;">Забронювати</button>
         </div>
     </div>
 
@@ -830,23 +1126,23 @@
                 <div class="footer-section">
                     <h4>Про MasterPlace</h4>
                     <ul>
-                        <li><a href="#">Про платформу</a></li>
-                        <li><a href="#">Як це працює</a></li>
+                        <li><a onclick="navigateTo('about')">Про платформу</a></li>
+                        <li><a onclick="navigateTo('contact')">Контакти</a></li>
                         <li><a href="#">Блог</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Для замовників</h4>
                     <ul>
-                        <li><a href="#">Пошук майстра</a></li>
-                        <li><a href="#">Мої замовлення</a></li>
+                        <li><a onclick="navigateTo('masters')">Пошук майстра</a></li>
+                        <li><a onclick="navigateTo('orders')">Мої замовлення</a></li>
                         <li><a href="#">Гарантія якості</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Для майстрів</h4>
                     <ul>
-                        <li><a href="#">Реєстрація</a></li>
+                        <li><a onclick="navigateTo('register')">Реєстрація</a></li>
                         <li><a href="#">Функціонал</a></li>
                         <li><a href="#">Комісія</a></li>
                     </ul>
@@ -855,7 +1151,7 @@
                     <h4>Контакти</h4>
                     <ul>
                         <li><a href="#">hello@masterplace.ua</a></li>
-                        <li><a href="#">+38 (0XX) XXX-XX-XX</a></li>
+                        <li><a href="#">+38 (067) 123-45-67</a></li>
                         <li><a href="#">Львів, Україна</a></li>
                     </ul>
                 </div>
@@ -867,7 +1163,7 @@
     </footer>
 
     <script>
-        // Sample data
+        // Data
         const masters = [
             {
                 id: 1,
@@ -878,9 +1174,7 @@
                 jobs: "120+",
                 price: 350,
                 image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
                 about: "Професійний майстер з 15 років досвіду в ремонті квартир та офісів. Гарантія якості на всі виконані роботи.",
-                tags: ["Капітальний ремонт", "Косметичний ремонт", "Дизайн-проект"],
                 services: [
                     { name: "Капітальний ремонт", price: 500 },
                     { name: "Косметичний ремонт", price: 350 },
@@ -896,9 +1190,7 @@
                 jobs: "95+",
                 price: 450,
                 image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
-                avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
                 about: "Творча дизайнерка з портфоліо престижних проектів. Спеціалізуюсь на сучасному дизайні інтер'єру.",
-                tags: ["Дизайн інтер'єру", "Концептуальний дизайн", "3D-візуалізація"],
                 services: [
                     { name: "Концепція дизайну", price: 600 },
                     { name: "Повний дизайн-проект", price: 800 },
@@ -914,9 +1206,7 @@
                 jobs: "180+",
                 price: 300,
                 image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-                avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
                 about: "Ліцензований електрик з повним спектром послуг. Все виконується згідно норм безпеки та ПУЕ.",
-                tags: ["Електромонтажні роботи", "Заміна проводки", "Розетки та вимикачі"],
                 services: [
                     { name: "Монтаж проводки", price: 250 },
                     { name: "Заміна розеток/вимикачів", price: 150 },
@@ -932,9 +1222,7 @@
                 jobs: "110+",
                 price: 320,
                 image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
                 about: "Досвідчений сантехнік, займаюся монтажем, ремонтом та обслуговуванням сантехніки.",
-                tags: ["Монтаж труб", "Ремонт змішувачів", "Заміна ванн"],
                 services: [
                     { name: "Монтаж труб", price: 400 },
                     { name: "Заміна змішувача", price: 200 },
@@ -950,9 +1238,7 @@
                 jobs: "85+",
                 price: 280,
                 image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
-                avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
                 about: "Професійна малярка з ідеальним в подробиця. Використовую якісні матеріали та краски.",
-                tags: ["Фарбування стін", "Фарбування стелі", "Декоративне малювання"],
                 services: [
                     { name: "Фарбування стін", price: 150 },
                     { name: "Фарбування стелі", price: 200 },
@@ -968,9 +1254,7 @@
                 jobs: "140+",
                 price: 380,
                 image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
                 about: "Спеціаліст по комплексному ремонту. Гарантійне обслуговування всіх виконаних робіт.",
-                tags: ["Комплексний ремонт", "Мансардні роботи", "Реставрація"],
                 services: [
                     { name: "Комплексний ремонт", price: 500 },
                     { name: "Мансардні роботи", price: 600 },
@@ -979,120 +1263,229 @@
             }
         ];
 
+        let currentUser = null;
         let filteredMasters = [...masters];
+        let selectedMasterId = null;
 
+        // Navigation
+        function navigateTo(page) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Show selected page
+            document.getElementById(page).classList.add('active');
+            // Update nav links
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            event.target?.classList.add('active');
+
+            // Load page-specific content
+            if (page === 'masters') renderMasters();
+            if (page === 'home') renderPopularMasters();
+            if (page === 'profile') loadProfile();
+            if (page === 'settings') loadSettings();
+        }
+
+        // Auth
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const name = email.split('@')[0];
+            
+            if (email && document.getElementById('loginPassword').value) {
+                currentUser = { name, email };
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                updateAuthUI();
+                navigateTo('home');
+            }
+        }
+
+        function register() {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            
+            if (name && email && document.getElementById('registerPassword').value) {
+                currentUser = { name, email };
+                localStorage.setItem('user', JSON.stringify(currentUser));
+                updateAuthUI();
+                navigateTo('home');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('user');
+            updateAuthUI();
+            navigateTo('home');
+        }
+
+        function updateAuthUI() {
+            const authButtons = document.getElementById('authButtons');
+            const userSection = document.getElementById('userSection');
+
+            if (currentUser) {
+                authButtons.style.display = 'none';
+                userSection.style.display = 'flex';
+                document.getElementById('userInitials').textContent = currentUser.name[0].toUpperCase();
+            } else {
+                authButtons.style.display = 'flex';
+                userSection.style.display = 'none';
+            }
+        }
+
+        function toggleUserMenu() {
+            document.getElementById('userDropdown').classList.toggle('active');
+        }
+
+        // Masters
         function renderMasters() {
             const grid = document.getElementById('mastersGrid');
             grid.innerHTML = '';
 
-            if (filteredMasters.length === 0) {
-                grid.innerHTML = '<div class="no-results" style="grid-column: 1/-1;"><h2>Майстрів не знайдено</h2><p>Спробуйте змінити фільтри пошуку</p></div>';
-                return;
-            }
-
-            filteredMasters.forEach((master, index) => {
+            filteredMasters.forEach(master => {
                 const card = document.createElement('div');
                 card.className = 'master-card';
-                card.style.animation = `fadeIn 0.3s ease ${index * 0.1}s both`;
+                card.onclick = () => showMasterDetail(master.id);
                 card.innerHTML = `
-                    <img src="${master.image}" alt="${master.name}" class="master-image">
+                    <img src="${master.image}" class="master-image">
                     <div class="master-info">
                         <div class="master-header">
-                            <img src="${master.avatar}" alt="${master.name}" class="master-avatar">
                             <div>
                                 <div class="master-name">${master.name}</div>
                                 <div class="master-specialty">${master.specialty}</div>
                             </div>
                         </div>
-                        
                         <div class="master-rating">
-                            <span class="stars">★★★★★</span>
-                            <span class="rating-text">${master.rating} (${master.reviews})</span>
+                            <span>⭐ ${master.rating}</span>
+                            <span>(${master.reviews})</span>
                         </div>
-
-                        <p class="master-description">${master.about.substring(0, 80)}...</p>
-
-                        <div class="master-tags">
-                            ${master.tags.slice(0, 2).map(tag => `<span class="tag">${tag}</span>`).join('')}
-                        </div>
-
                         <div class="master-price">${master.price} грн/год</div>
-
-                        <div class="master-actions">
-                            <button class="btn-small" onclick="sendMessage()">💬 Чат</button>
-                            <button class="btn-small" onclick="callMaster()">☎️ Дзвін</button>
-                            <button class="btn-small primary" onclick="openMasterModal(${master.id})">Детально</button>
-                        </div>
+                        <button class="master-btn">Детальніше</button>
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        function openMasterModal(masterId) {
-            const master = masters.find(m => m.id === masterId);
-            if (!master) return;
+        function renderPopularMasters() {
+            const grid = document.getElementById('popularMasters');
+            grid.innerHTML = '';
 
-            document.getElementById('modalImage').src = master.image;
-            document.getElementById('modalName').textContent = master.name;
-            document.getElementById('modalSpecialty').textContent = master.specialty;
-            document.getElementById('modalRating').textContent = master.rating;
-            document.getElementById('modalReviews').textContent = master.reviews;
-            document.getElementById('modalJobs').textContent = master.jobs;
-            document.getElementById('modalAbout').textContent = master.about;
-
-            const servicesList = document.getElementById('modalServicesList');
-            servicesList.innerHTML = master.services.map(service => `
-                <div class="service-item">
-                    <span>${service.name}</span>
-                    <span class="service-price">${service.price} грн</span>
-                </div>
-            `).join('');
-
-            document.getElementById('masterModal').classList.add('active');
+            masters.slice(0, 3).forEach(master => {
+                const card = document.createElement('div');
+                card.className = 'master-card';
+                card.onclick = () => { selectedMasterId = master.id; navigateTo('masterDetail'); };
+                card.innerHTML = `
+                    <img src="${master.image}" class="master-image">
+                    <div class="master-info">
+                        <div class="master-header">
+                            <div>
+                                <div class="master-name">${master.name}</div>
+                                <div class="master-specialty">${master.specialty}</div>
+                            </div>
+                        </div>
+                        <div class="master-rating">
+                            <span>⭐ ${master.rating}</span>
+                            <span>(${master.reviews})</span>
+                        </div>
+                        <div class="master-price">${master.price} грн/год</div>
+                        <button class="master-btn">Детальніше</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
         }
 
-        function closeMasterModal(event) {
-            if (event && event.target !== document.getElementById('masterModal')) return;
-            document.getElementById('masterModal').classList.remove('active');
+        function showMasterDetail(masterId) {
+            selectedMasterId = masterId;
+            navigateTo('masterDetail');
+            loadMasterDetail();
+        }
+
+        function loadMasterDetail() {
+            const master = masters.find(m => m.id === selectedMasterId);
+            if (!master) return;
+
+            document.getElementById('detailImage').src = master.image;
+            document.getElementById('detailName').textContent = master.name;
+            document.getElementById('detailSpecialty').textContent = master.specialty;
+            document.getElementById('detailRating').textContent = master.rating;
+            document.getElementById('detailReviews').textContent = master.reviews;
+            document.getElementById('detailJobs').textContent = master.jobs;
+            document.getElementById('detailAbout').textContent = master.about;
+
+            const servicesList = document.getElementById('detailServices');
+            servicesList.innerHTML = master.services.map(service => `
+                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border);">
+                    <span>${service.name}</span>
+                    <span style="font-weight: 700; color: var(--accent-gold);">${service.price} грн</span>
+                </div>
+            `).join('');
         }
 
         function filterMasters() {
-            const search = document.getElementById('searchInput').value.toLowerCase();
             const specialty = document.getElementById('specialtyFilter').value;
             const minRating = parseFloat(document.getElementById('ratingFilter').value) || 0;
             const maxPrice = parseFloat(document.getElementById('priceFilter').value) || Infinity;
 
-            filteredMasters = masters.filter(master => {
-                const matchSearch = master.name.toLowerCase().includes(search) ||
-                                  master.specialty.toLowerCase().includes(search) ||
-                                  master.about.toLowerCase().includes(search) ||
-                                  master.tags.some(tag => tag.toLowerCase().includes(search));
-                
-                const matchSpecialty = !specialty || master.specialty === specialty;
-                const matchRating = master.rating >= minRating;
-                const matchPrice = master.price <= maxPrice;
-
-                return matchSearch && matchSpecialty && matchRating && matchPrice;
-            });
+            filteredMasters = masters.filter(m => 
+                (!specialty || m.specialty === specialty) &&
+                m.rating >= minRating &&
+                m.price <= maxPrice
+            );
 
             renderMasters();
         }
 
-        function sendMessage() {
-            alert('💬 Чат функція буде доступна після реєстрації');
+        // Profile
+        function loadProfile() {
+            if (!currentUser) return;
+
+            document.getElementById('profileNameHeader').textContent = currentUser.name;
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('profilePhone').textContent = '+38 (0XX) XXX-XX-XX';
+            document.getElementById('profileDate').textContent = new Date().toLocaleDateString('uk-UA');
         }
 
-        function callMaster() {
-            alert('☎️ Номер буде показано після підтвердження контакту');
+        function loadSettings() {
+            if (!currentUser) return;
+
+            document.getElementById('settingsName').value = currentUser.name;
+            document.getElementById('settingsEmail').value = currentUser.email;
         }
 
-        function bookMaster() {
-            alert('📅 Система бронювання буде доступна в розширеній версії');
+        function saveSettings() {
+            currentUser.name = document.getElementById('settingsName').value;
+            currentUser.email = document.getElementById('settingsEmail').value;
+            localStorage.setItem('user', JSON.stringify(currentUser));
+            alert('✓ Зміни збережені');
+        }
+
+        // Search
+        function searchAndNavigate() {
+            const query = document.getElementById('homeSearch').value;
+            if (query) {
+                navigateTo('masters');
+            }
+        }
+
+        // Modal
+        function openBookingModal() {
+            document.getElementById('bookingModal').classList.add('active');
+        }
+
+        function closeBookingModal(event) {
+            if (event && event.target !== document.getElementById('bookingModal')) return;
+            document.getElementById('bookingModal').classList.remove('active');
         }
 
         // Initialize
-        renderMasters();
+        window.addEventListener('load', () => {
+            const stored = localStorage.getItem('user');
+            if (stored) {
+                currentUser = JSON.parse(stored);
+            }
+            updateAuthUI();
+            renderPopularMasters();
+        });
     </script>
 </body>
 </html>
