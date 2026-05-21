@@ -1,437 +1,157 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Заявка на замір або монтаж дверей</title>
-  <meta name="description" content="Заявка на замір або монтаж дверей у Львові та області." />
-
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:#070707;
+      font-family:Arial,Helvetica,sans-serif;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:20px;
     }
-
-    html {
-      scroll-behavior: smooth;
+    .box{
+      width:min(720px,100%);
+      background:linear-gradient(180deg,#151515,#090909);
+      padding:34px;
+      border-radius:24px;
+      border:1px solid rgba(225,29,46,.45);
+      box-shadow:0 22px 70px rgba(0,0,0,.55);
     }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #070707;
-      color: #fff;
-      min-height: 100vh;
-      overflow-x: hidden;
+    .title{
+      text-align:center;
+      font-size:clamp(32px,5vw,56px);
+      line-height:1.05;
+      font-weight:900;
+      text-transform:uppercase;
+      margin-bottom:22px;
     }
-
-    .page {
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 82% 8%, rgba(225, 29, 46, 0.22), transparent 32%),
-        linear-gradient(180deg, #030303 0%, #101010 50%, #050505 100%);
+    .title span{display:block;color:#e11d2e}
+    .field{margin-top:14px}
+    input,select,textarea{
+      width:100%;
+      padding:18px;
+      border-radius:14px;
+      background:#0b0b0b;
+      border:1px solid #333;
+      color:#fff;
+      font-size:17px;
+      outline:none;
     }
-
-    /* ===== АДАПТИВНИЙ БАНЕР ===== */
-
-    .top-banner {
-      width: 100%;
-      background: #000;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 18px 55px rgba(0,0,0,0.55);
-      overflow: hidden;
+    textarea{min-height:120px;resize:vertical}
+    input:focus,select:focus,textarea:focus{
+      border-color:#e11d2e;
+      box-shadow:0 0 0 4px rgba(225,29,46,.14);
     }
-
-    .banner-frame {
-      width: 100%;
-      max-width: 1920px;
-      margin: 0 auto;
-      background: #000;
-      aspect-ratio: 1920 / 620;
-      min-height: 220px;
-      max-height: 620px;
-      overflow: hidden;
+    .btn{
+      margin-top:18px;
+      width:100%;
+      padding:18px;
+      border:0;
+      border-radius:14px;
+      background:#e11d2e;
+      color:#fff;
+      font-weight:900;
+      font-size:18px;
+      cursor:pointer;
+      text-transform:uppercase;
     }
-
-    .banner-frame img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-      object-position: center center;
+    .status{
+      text-align:center;
+      margin-top:16px;
+      font-weight:800;
+      min-height:24px;
     }
-
-    /* Якщо банер широкий — на планшеті показуємо центр і праву частину */
-    @media (max-width: 1024px) {
-      .banner-frame {
-        aspect-ratio: 1024 / 430;
-        min-height: 250px;
-      }
-
-      .banner-frame img {
-        object-position: center center;
-      }
-    }
-
-    /* На телефоні банер не ламає сайт і не створює горизонтальний скрол */
-    @media (max-width: 700px) {
-      .banner-frame {
-        aspect-ratio: 4 / 3;
-        min-height: 310px;
-      }
-
-      .banner-frame img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: 58% center;
-      }
-    }
-
-    @media (max-width: 420px) {
-      .banner-frame {
-        aspect-ratio: 3 / 3.35;
-        min-height: 360px;
-      }
-
-      .banner-frame img {
-        object-position: 56% center;
-      }
-    }
-
-    /* ===== ФОРМА ===== */
-
-    .form-section {
-      width: min(860px, 92%);
-      margin: 0 auto;
-      padding: 46px 0 86px;
-    }
-
-    .form-card {
-      position: relative;
-      background:
-        linear-gradient(180deg, rgba(20,20,20,0.96), rgba(9,9,9,0.96));
-      border: 1px solid rgba(225, 29, 46, 0.42);
-      border-radius: 26px;
-      padding: clamp(22px, 4vw, 42px);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.03),
-        0 22px 70px rgba(0,0,0,0.58),
-        0 0 36px rgba(225,29,46,0.12);
-      overflow: hidden;
-    }
-
-    .form-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, transparent 0%, transparent 44%, rgba(225,29,46,0.12) 45%, transparent 58%),
-        radial-gradient(circle at top right, rgba(225,29,46,0.12), transparent 30%);
-      pointer-events: none;
-    }
-
-    .form-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .title {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .title h1 {
-      font-size: clamp(32px, 5vw, 54px);
-      line-height: 1.05;
-      font-weight: 900;
-      letter-spacing: -1px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .title h1 span {
-      color: #e11d2e;
-      display: block;
-    }
-
-    .decor {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 18px;
-      margin-top: 18px;
-      color: #e11d2e;
-      font-size: 28px;
-      font-weight: 900;
-    }
-
-    .decor::before,
-    .decor::after {
-      content: "";
-      display: block;
-      width: 120px;
-      max-width: 28vw;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-    }
-
-    form {
-      display: grid;
-      gap: 16px;
-    }
-
-    .field {
-      position: relative;
-    }
-
-    .field-icon {
-      position: absolute;
-      left: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #a9a9a9;
-      font-size: 20px;
-      pointer-events: none;
-    }
-
-    .textarea-icon {
-      top: 25px;
-      transform: none;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      border: 1px solid rgba(255,255,255,0.13);
-      background: rgba(0,0,0,0.42);
-      color: #fff;
-      border-radius: 14px;
-      padding: 18px 18px 18px 56px;
-      font-size: 18px;
-      outline: none;
-      transition: 0.2s ease;
-    }
-
-    textarea {
-      min-height: 130px;
-      resize: vertical;
-      line-height: 1.4;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: #9f9f9f;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      border-color: #e11d2e;
-      box-shadow: 0 0 0 4px rgba(225,29,46,0.16);
-      background: rgba(0,0,0,0.62);
-    }
-
-    select {
-      appearance: none;
-      cursor: pointer;
-      color: #cfcfcf;
-    }
-
-    .btn-submit {
-      margin-top: 10px;
-      border: 0;
-      cursor: pointer;
-      min-height: 66px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #e11d2e, #ff1f32);
-      color: #fff;
-      font-size: 20px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 14px 34px rgba(225,29,46,0.36);
-      transition: 0.2s ease;
-    }
-
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 44px rgba(225,29,46,0.46);
-    }
-
-    .safe-text {
-      text-align: center;
-      margin-top: 18px;
-      color: #a8a8a8;
-      font-size: 15px;
-    }
-
-    .status {
-      text-align: center;
-      margin-top: 14px;
-      min-height: 24px;
-      font-weight: 800;
-    }
-
-    .floating-call {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 20;
-      width: 62px;
-      height: 62px;
-      display: grid;
-      place-items: center;
-      background: #e11d2e;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 50%;
-      font-size: 26px;
-      box-shadow: 0 14px 34px rgba(225,29,46,0.42);
-      transition: 0.2s ease;
-    }
-
-    .floating-call:hover {
-      transform: translateY(-2px) scale(1.03);
-      background: #ff1f32;
-    }
-
-    @media (max-width: 700px) {
-      .form-section {
-        width: min(94%, 860px);
-        padding-top: 28px;
-      }
-
-      .form-card {
-        border-radius: 22px;
-      }
-
-      .title h1 {
-        font-size: 30px;
-      }
-
-      input,
-      select,
-      textarea {
-        font-size: 16px;
-        padding-top: 16px;
-        padding-bottom: 16px;
-      }
-
-      .btn-submit {
-        font-size: 17px;
-        min-height: 60px;
-      }
+    .call{
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      width:64px;
+      height:64px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#e11d2e;
+      color:#fff;
+      text-decoration:none;
+      font-size:28px;
+      box-shadow:0 14px 34px rgba(225,29,46,.42);
     }
   </style>
 </head>
-
 <body>
-  <div class="page">
-    <header class="top-banner">
-      <div class="banner-frame">
-        <!-- Файл banner.png має лежати в тій самій папці, що й index.html -->
-        <img src="banner.png" alt="" />
+  <div class="box">
+    <div class="title">Заявка<span>на замір або монтаж</span></div>
+
+    <form id="form">
+      <div class="field">
+        <input name="name" placeholder="Ваше імʼя" required>
       </div>
-    </header>
 
-    <main class="form-section">
-      <section class="form-card">
-        <div class="form-inner">
-          <div class="title">
-            <h1>Заявка на замір <span>або монтаж дверей</span></h1>
-            <div class="decor">///</div>
-          </div>
+      <div class="field">
+        <input name="phone" placeholder="Телефон" required>
+      </div>
 
-          <form id="leadForm">
-            <div class="field">
-              <span class="field-icon">👤</span>
-              <input id="name" name="name" type="text" placeholder="Ваше ім’я" required />
-            </div>
+      <div class="field">
+        <select name="service" required>
+          <option value="">Що потрібно?</option>
+          <option>Замір дверей</option>
+          <option>Монтаж дверей</option>
+          <option>Консультація</option>
+        </select>
+      </div>
 
-            <div class="field">
-              <span class="field-icon">📞</span>
-              <input id="phone" name="phone" type="tel" placeholder="Номер телефону" required />
-            </div>
+      <div class="field">
+        <textarea name="message" placeholder="Коментар"></textarea>
+      </div>
 
-            <div class="field">
-              <span class="field-icon">🛠</span>
-              <select id="service" name="service" required>
-                <option value="">Що потрібно?</option>
-                <option>Замір дверей</option>
-                <option>Монтаж міжкімнатних дверей</option>
-                <option>Монтаж вхідних дверей</option>
-                <option>Демонтаж старих дверей</option>
-                <option>Консультація</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <span class="field-icon">📍</span>
-              <input id="address" name="address" type="text" placeholder="Адреса об’єкта / район" />
-            </div>
-
-            <div class="field">
-              <span class="field-icon textarea-icon">✎</span>
-              <textarea id="message" name="message" placeholder="Коментар (необов’язково)"></textarea>
-            </div>
-
-            <button class="btn-submit" type="submit">➤ Надіслати заявку</button>
-            <div class="status" id="status"></div>
-            <p class="safe-text">🔒 Ваші дані в безпеці та не передаються третім особам</p>
-          </form>
-        </div>
-      </section>
-    </main>
+      <button class="btn" type="submit">Надіслати заявку</button>
+      <div id="status" class="status"></div>
+    </form>
   </div>
 
-  <a class="floating-call" href="tel:07386060808" aria-label="Подзвонити">☎</a>
+  <a class="call" href="tel:0738606808">☎</a>
 
   <script>
-    const BOT_TOKEN = "ВСТАВ_СЮДИ_TOKEN_БОТА";
-    const CHAT_ID = "ВСТАВ_СЮДИ_CHAT_ID";
+    const BOT_TOKEN = "ВСТАВ_TOKEN";
+    const CHAT_ID = "ВСТАВ_CHAT_ID";
 
-    const form = document.getElementById("leadForm");
-    const statusBox = document.getElementById("status");
+    document.getElementById("form").addEventListener("submit", async function(e) {
+      e.preventDefault();
 
-    form.addEventListener("submit", async function (event) {
-      event.preventDefault();
+      const f = new FormData(e.target);
 
-      const data = new FormData(form);
-      const name = data.get("name").trim();
-      const phone = data.get("phone").trim();
-      const service = data.get("service");
-      const address = data.get("address").trim();
-      const message = data.get("message").trim();
+      const msg =
+        "🚪 Нова заявка\n" +
+        "👤 Імʼя: " + f.get("name") + "\n" +
+        "📞 Телефон: " + f.get("phone") + "\n" +
+        "🛠 Послуга: " + f.get("service") + "\n" +
+        "💬 Коментар: " + (f.get("message") || "-");
 
-      const text = `🚪 Нова заявка з сайту
-
-👤 Ім'я: ${name}
-📞 Телефон: ${phone}
-🛠 Послуга: ${service}
-📍 Адреса/район: ${address || "Не вказано"}
-💬 Коментар: ${message || "Без коментаря"}`;
-
-      statusBox.textContent = "Відправляємо заявку...";
+      const status = document.getElementById("status");
+      status.innerHTML = "Відправляємо заявку...";
 
       try {
-        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
             chat_id: CHAT_ID,
-            text: text
+            text: msg
           })
         });
 
-        if (!response.ok) throw new Error("Telegram error");
-
-        statusBox.textContent = "✅ Заявку відправлено. Скоро зв’яжемось!";
-        form.reset();
+        status.innerHTML = "✅ Надіслано. Наші менеджери зв’яжуться з вами найближчим часом";
+        e.target.reset();
       } catch (error) {
-        statusBox.textContent = "❌ Не вийшло відправити. Подзвоніть: 073 860 60 808";
+        status.innerHTML = "❌ Помилка відправки. Зателефонуйте: 073 860 68 08";
       }
     });
   </script>
