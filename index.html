@@ -1,1491 +1,527 @@
 <!DOCTYPE html>
 <html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MasterPlace - Знайди кращого майстра</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #1e1b4b;
-            --primary-light: #312e81;
-            --accent-gold: #f59e0b;
-            --accent-blue: #3b82f6;
-            --accent-teal: #14b8a6;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-            --text-light: #9ca3af;
-            --bg-light: #f9fafb;
-            --bg-white: #ffffff;
-            --border: #e5e7eb;
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
-            --danger: #ef4444;
-            --success: #10b981;
-        }
-
-        html, body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-light);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        .header {
-            background: var(--bg-white);
-            border-bottom: 1px solid var(--border);
-            padding: 20px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            cursor: pointer;
-            letter-spacing: -1px;
-        }
-
-        .nav {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-            flex: 1;
-        }
-
-        .nav-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--accent-blue);
-        }
-
-        .nav-link.active {
-            color: var(--accent-blue);
-            font-weight: 600;
-        }
-
-        .auth-section {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .user-menu {
-            position: relative;
-        }
-
-        .user-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 13px;
-            color: var(--text-primary);
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-teal) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            min-width: 200px;
-            margin-top: 8px;
-            box-shadow: var(--shadow-lg);
-            z-index: 100;
-        }
-
-        .dropdown-menu.active {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 12px 16px;
-            color: var(--text-primary);
-            text-decoration: none;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border);
-            transition: background 0.3s ease;
-        }
-
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-item:hover {
-            background: var(--bg-light);
-            color: var(--accent-blue);
-        }
-
-        .btn-secondary {
-            padding: 10px 20px;
-            background: transparent;
-            border: 1.5px solid var(--border);
-            color: var(--text-primary);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-        }
-
-        .btn-primary {
-            padding: 10px 24px;
-            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-teal) 100%);
-            border: none;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
-        }
-
-        /* Page Container */
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 100px 0;
-            margin-bottom: 60px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 56px;
-            font-weight: 900;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
-
-        .hero h1 span {
-            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-teal) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 18px;
-            margin-bottom: 40px;
-            opacity: 0.9;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .search-box {
-            background: white;
-            border-radius: 12px;
-            padding: 16px 24px;
-            display: flex;
-            gap: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .search-box input {
-            flex: 1;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            color: var(--text-primary);
-            font-family: inherit;
-        }
-
-        .search-box button {
-            padding: 10px 24px;
-            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-teal) 100%);
-            border: none;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            font-family: inherit;
-        }
-
-        .search-box button:hover {
-            transform: scale(1.05);
-        }
-
-        /* Features */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .feature-icon {
-            font-size: 40px;
-            margin-bottom: 16px;
-        }
-
-        .feature-card h3 {
-            margin-bottom: 12px;
-            color: var(--text-primary);
-        }
-
-        .feature-card p {
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-
-        /* Masters Grid */
-        .masters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 60px;
-        }
-
-        .master-card {
-            background: var(--bg-white);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .master-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--accent-blue);
-        }
-
-        .master-image {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .master-info {
-            padding: 24px;
-        }
-
-        .master-header {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .master-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--accent-gold);
-        }
-
-        .master-name {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .master-specialty {
-            font-size: 12px;
-            color: var(--accent-blue);
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .master-rating {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 13px;
-        }
-
-        .master-rating span:first-child {
-            color: var(--accent-gold);
-        }
-
-        .master-price {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 12px 0;
-        }
-
-        .master-btn {
-            width: 100%;
-            padding: 10px;
-            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-teal) 100%);
-            border: none;
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
-
-        .master-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        /* Form */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            font-size: 13px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 13px;
-            font-family: inherit;
-            color: var(--text-primary);
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-container {
-            max-width: 600px;
-            margin: 40px auto;
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .form-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .form-link {
-            text-align: center;
-            margin-top: 20px;
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-
-        .form-link a {
-            color: var(--accent-blue);
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        /* Filters */
-        .filters-section {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow);
-        }
-
-        .filters-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        /* Profile */
-        .profile-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 40px 0;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 4px solid var(--accent-gold);
-            margin-bottom: 20px;
-            object-fit: cover;
-        }
-
-        .profile-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 40px;
-        }
-
-        .profile-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .profile-item:last-child {
-            border-bottom: none;
-        }
-
-        .profile-label {
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .profile-value {
-            color: var(--text-primary);
-        }
-
-        /* Orders */
-        .order-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .order-info h4 {
-            margin-bottom: 8px;
-        }
-
-        .order-status {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .order-status.pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .order-status.completed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        /* Footer */
-        .footer {
-            background: var(--primary);
-            color: white;
-            padding: 60px 0 20px;
-            margin-top: 80px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-section h4 {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section li {
-            margin-bottom: 10px;
-        }
-
-        .footer-section a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            font-size: 13px;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 40px;
-            animation: slideUp 0.3s ease;
-            position: relative;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 36px;
-            height: 36px;
-            background: var(--bg-light);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            background: var(--accent-blue);
-            color: white;
-        }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
-
-        .alert.success {
-            background: #d1fae5;
-            color: #065f46;
-            border-left: 4px solid var(--success);
-        }
-
-        .alert.error {
-            background: #fee2e2;
-            color: #7f1d1d;
-            border-left: 4px solid var(--danger);
-        }
-
-        @media (max-width: 768px) {
-            .header-content {
-                gap: 20px;
-            }
-
-            .nav {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 36px;
-            }
-
-            .masters-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-container {
-                padding: 20px;
-            }
-
-            .modal-content {
-                padding: 20px;
-            }
-        }
-    </style>
-</head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo" onclick="navigateTo('home')">MasterPlace</div>
-                <nav class="nav">
-                    <a class="nav-link active" onclick="navigateTo('home')">Головна</a>
-                    <a class="nav-link" onclick="navigateTo('masters')">Знайти майстра</a>
-                    <a class="nav-link" onclick="navigateTo('about')">Про нас</a>
-                    <a class="nav-link" onclick="navigateTo('contact')">Контакти</a>
-                </nav>
-                <div class="auth-section">
-                    <div id="authButtons" class="auth-section">
-                        <button class="btn-secondary" onclick="navigateTo('login')">Вхід</button>
-                        <button class="btn-primary" onclick="navigateTo('register')">Реєстрація</button>
-                    </div>
-                    <div id="userSection" style="display: none;" class="user-menu">
-                        <button class="user-btn" onclick="toggleUserMenu()">
-                            <div class="user-avatar" id="userInitials">У</div>
-                            <span>Меню</span>
-                        </button>
-                        <div class="dropdown-menu" id="userDropdown">
-                            <a class="dropdown-item" onclick="navigateTo('profile')">👤 Мій профіль</a>
-                            <a class="dropdown-item" onclick="navigateTo('orders')">📋 Мої замовлення</a>
-                            <a class="dropdown-item" onclick="navigateTo('settings')">⚙️ Налаштування</a>
-                            <a class="dropdown-item" onclick="logout()">🚪 Вийти</a>
-                        </div>
-                    </div>
-                </div>
+ import React, { useEffect, useMemo, useState } from "react";
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, orderBy, query as firestoreQuery, serverTimestamp } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { motion, AnimatePresence } from "framer-motion";
+import { ShoppingBag, MessageCircle, Phone, Send, Search, PackageCheck, Truck, Star, ShieldCheck, X, Plus, Minus, ClipboardList, Download, Filter, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+// 1) Встанови пакет: npm install firebase
+// 2) Встав сюди firebaseConfig з Firebase Console → Project settings → Your apps → Web app.
+const firebaseConfig = {
+  apiKey: "PASTE_API_KEY",
+  authDomain: "PASTE_PROJECT.firebaseapp.com",
+  projectId: "PASTE_PROJECT_ID",
+  storageBucket: "PASTE_PROJECT.appspot.com",
+  messagingSenderId: "PASTE_SENDER_ID",
+  appId: "PASTE_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const initialProducts = [
+  {
+    id: 1,
+    name: "Літня сукня Candy Pink",
+    category: "Жіноче",
+    price: 799,
+    oldPrice: 1099,
+    sizes: ["S", "M", "L"],
+    colors: ["Рожевий", "Білий"],
+    tag: "Хіт Reels",
+    image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    id: 2,
+    name: "Сорочка Oversize Lemon",
+    category: "Жіноче",
+    price: 650,
+    oldPrice: 890,
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Жовтий", "Білий"],
+    tag: "Новинка",
+    image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    id: 3,
+    name: "Джинси Blue Street",
+    category: "Жіноче",
+    price: 1190,
+    oldPrice: 1490,
+    sizes: ["XS", "S", "M", "L"],
+    colors: ["Синій"],
+    tag: "Топ продажів",
+    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    id: 4,
+    name: "Біла базова футболка",
+    category: "Чоловіче",
+    price: 420,
+    oldPrice: 590,
+    sizes: ["M", "L", "XL", "XXL"],
+    colors: ["Білий", "Чорний"],
+    tag: "База",
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    id: 5,
+    name: "Костюм Sport Casual",
+    category: "Акції",
+    price: 1390,
+    oldPrice: 1890,
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Беж", "Сірий"],
+    tag: "-26%",
+    image: "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?q=80&w=1200&auto=format&fit=crop"
+  },
+  {
+    id: 6,
+    name: "Сумка Mini Hot Pink",
+    category: "Новинки",
+    price: 540,
+    oldPrice: 760,
+    sizes: ["One size"],
+    colors: ["Рожевий"],
+    tag: "WOW",
+    image: "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?q=80&w=1200&auto=format&fit=crop"
+  }
+];
+
+const categories = ["Всі", "Новинки", "Жіноче", "Чоловіче", "Акції"];
+const statuses = ["Нове", "В роботі", "Відправлено", "Завершено"];
+
+function money(value) {
+  return new Intl.NumberFormat("uk-UA").format(value) + " грн";
+}
+
+export default function TviyOdyagLandingCRM() {
+  const [activeCategory, setActiveCategory] = useState("Всі");
+  const [query, setQuery] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showCrm, setShowCrm] = useState(false);
+  const [products, setProducts] = useState(initialProducts);
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    category: "Жіноче",
+    price: "",
+    oldPrice: "",
+    sizes: "S,M,L",
+    colors: "",
+    tag: "Новинка",
+    image: ""
+  });
+  const [imageFile, setImageFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [orders, setOrders] = useState([
+    { id: 1001, name: "Марія", phone: "+380 67 123 45 67", product: "Літня сукня Candy Pink", qty: 1, size: "M", city: "Львів", status: "Нове", total: 799 },
+    { id: 1002, name: "Оксана", phone: "+380 93 555 11 22", product: "Джинси Blue Street", qty: 1, size: "S", city: "Тернопіль", status: "В роботі", total: 1190 }
+  ]);
+  const [form, setForm] = useState({ name: "", phone: "", city: "", delivery: "", size: "", qty: 1, comment: "" });
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      const byCategory = activeCategory === "Всі" || p.category === activeCategory || (activeCategory === "Новинки" && p.tag === "Новинка");
+      const byQuery = p.name.toLowerCase().includes(query.toLowerCase());
+      return byCategory && byQuery;
+    });
+  }, [activeCategory, query]);
+
+  const currentTotal = selectedProduct ? selectedProduct.price * Number(form.qty || 1) : 0;
+
+  useEffect(() => {
+    const productsQuery = firestoreQuery(collection(db, "products"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(productsQuery, (snapshot) => {
+      const firebaseProducts = snapshot.docs.map((item) => ({
+        firebaseId: item.id,
+        ...item.data()
+      }));
+
+      if (firebaseProducts.length > 0) {
+        setProducts(firebaseProducts);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const ordersQuery = firestoreQuery(collection(db, "orders"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
+      const firebaseOrders = snapshot.docs.map((item) => ({
+        firebaseId: item.id,
+        ...item.data()
+      }));
+
+      if (firebaseOrders.length > 0) {
+        setOrders(firebaseOrders);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  function openOrder(product) {
+    setSelectedProduct(product);
+    setForm((prev) => ({ ...prev, size: product.sizes[0], qty: 1 }));
+  }
+
+  async function createOrder(e) {
+    e.preventDefault();
+    if (!selectedProduct || !form.name || !form.phone) return;
+
+    const order = {
+      id: Date.now(),
+      name: form.name,
+      phone: form.phone,
+      product: selectedProduct.name,
+      productId: selectedProduct.firebaseId || selectedProduct.id,
+      qty: Number(form.qty || 1),
+      size: form.size,
+      city: form.city,
+      delivery: form.delivery,
+      comment: form.comment,
+      status: "Нове",
+      total: currentTotal,
+      createdAt: serverTimestamp()
+    };
+
+    await addDoc(collection(db, "orders"), order);
+    setSelectedProduct(null);
+    setForm({ name: "", phone: "", city: "", delivery: "", size: "", qty: 1, comment: "" });
+    setShowCrm(true);
+  }
+
+  async function changeStatus(order, status) {
+    if (!order.firebaseId) return;
+    await updateDoc(doc(db, "orders", order.firebaseId), { status });
+  }
+
+  async function addProduct(e) {
+    e.preventDefault();
+    if (!newProduct.name || !newProduct.price || (!newProduct.image && !imageFile)) return;
+
+    setUploading(true);
+
+    let imageUrl = newProduct.image;
+
+    if (imageFile) {
+      const fileName = `${Date.now()}-${imageFile.name}`;
+      const imageRef = ref(storage, `products/${fileName}`);
+      await uploadBytes(imageRef, imageFile);
+      imageUrl = await getDownloadURL(imageRef);
+    }
+
+    const product = {
+      id: Date.now(),
+      name: newProduct.name,
+      category: newProduct.category,
+      price: Number(newProduct.price),
+      oldPrice: Number(newProduct.oldPrice || newProduct.price),
+      sizes: newProduct.sizes.split(",").map((s) => s.trim()).filter(Boolean),
+      colors: newProduct.colors.split(",").map((c) => c.trim()).filter(Boolean),
+      tag: newProduct.tag || "Новинка",
+      image: imageUrl,
+      createdAt: serverTimestamp()
+    };
+
+    await addDoc(collection(db, "products"), product);
+    setNewProduct({ name: "", category: "Жіноче", price: "", oldPrice: "", sizes: "S,M,L", colors: "", tag: "Новинка", image: "" });
+    setImageFile(null);
+    setUploading(false);
+  }
+
+  async function deleteProduct(product) {
+    if (!product.firebaseId) {
+      setProducts((prev) => prev.filter((p) => p.id !== product.id));
+      return;
+    }
+
+    await deleteDoc(doc(db, "products", product.firebaseId));
+  }
+
+  function exportOrders() {
+    const header = "ID;Ім'я;Телефон;Товар;Кількість;Розмір;Місто;Статус;Сума\n";
+    const rows = orders.map((o) => `${o.id};${o.name};${o.phone};${o.product};${o.qty};${o.size};${o.city};${o.status};${o.total}`).join("\n");
+    const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tviy-odyag-orders.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-amber-50 text-zinc-950">
+      <header className="sticky top-0 z-40 border-b border-rose-100 bg-white/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6">
+          <div className="flex items-center gap-3">
+            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-pink-600 to-amber-300 text-lg font-black text-white shadow-lg shadow-pink-200">ТО</div>
+            <div>
+              <p className="text-lg font-black leading-tight">Твій Одяг</p>
+              <p className="text-xs font-medium text-zinc-500">стиль • якість • доставка</p>
             </div>
+          </div>
+          <nav className="hidden items-center gap-6 text-sm font-semibold text-zinc-600 md:flex">
+            <a href="#catalog" className="hover:text-pink-600">Каталог</a>
+            <a href="#why" className="hover:text-pink-600">Переваги</a>
+            <button onClick={() => setShowCrm(true)} className="hover:text-pink-600">CRM</button>
+          </nav>
+          <Button onClick={() => document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" })} className="rounded-2xl bg-pink-600 px-5 font-bold hover:bg-pink-700">
+            Купити
+          </Button>
         </div>
-    </header>
+      </header>
 
-    <!-- Pages -->
-
-    <!-- Home Page -->
-    <div id="home" class="page active">
-        <div class="hero">
-            <div class="container">
-                <h1>Знайди кращого <span>майстра</span></h1>
-                <p>Професійні майстри для будь-яких робіт - від ремонту до дизайну</p>
-                <div class="search-box">
-                    <input type="text" placeholder="Ремонт, дизайн, будівництво..." id="homeSearch">
-                    <button onclick="searchAndNavigate()">🔍 Пошук</button>
-                </div>
+      <main>
+        <section className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-10 md:grid-cols-2 md:px-6 md:py-16">
+          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-pink-200 bg-white px-4 py-2 text-sm font-bold text-pink-700 shadow-sm">
+              <Star className="h-4 w-4 fill-pink-600" /> Продажі напряму з Facebook Reels
             </div>
-        </div>
-
-        <div class="container">
-            <h2 style="margin-bottom: 40px; font-size: 28px; font-weight: 700;">Чому вибирають MasterPlace?</h2>
-            <div class="features">
-                <div class="feature-card">
-                    <div class="feature-icon">✨</div>
-                    <h3>Верифіковані майстри</h3>
-                    <p>Всі майстри проходять перевірку якості та мають рейтинги від реальних замовників</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Безпечні платежі</h3>
-                    <p>Гарантійне утримання коштів до завершення роботи забезпечує вашу безпеку</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⭐</div>
-                    <h3>Якість гарантована</h3>
-                    <p>Якщо ви задоволені результатом - платіть, ні - повне повернення коштів</p>
-                </div>
+            <h1 className="max-w-xl text-5xl font-black tracking-tight md:text-7xl">
+              Твій <span className="bg-gradient-to-r from-pink-600 to-amber-400 bg-clip-text text-transparent">Одяг</span>
+            </h1>
+            <p className="mt-5 max-w-lg text-lg font-medium leading-8 text-zinc-600">
+              Яскравий односторінковий магазин для швидких замовлень після Reels: товар, кнопка, заявка, CRM. Без зайвої ходьби по сайту — клієнт купує, поки ще гарячий.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button onClick={() => document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" })} className="h-14 rounded-2xl bg-pink-600 px-7 text-base font-black hover:bg-pink-700">
+                <ShoppingBag className="mr-2 h-5 w-5" /> Дивитись товари
+              </Button>
+              <Button variant="outline" className="h-14 rounded-2xl border-pink-200 px-7 text-base font-black hover:bg-pink-50">
+                <MessageCircle className="mr-2 h-5 w-5" /> Messenger
+              </Button>
             </div>
-
-            <h2 style="margin: 60px 0 40px; font-size: 28px; font-weight: 700;">Популярні майстри</h2>
-            <div class="masters-grid" id="popularMasters"></div>
-        </div>
-    </div>
-
-    <!-- Masters Page -->
-    <div id="masters" class="page">
-        <div class="container" style="padding-top: 40px;">
-            <h1 style="margin-bottom: 40px; font-size: 36px; font-weight: 700;">Знайти майстра</h1>
-
-            <div class="filters-section">
-                <div class="filters-grid">
-                    <div class="form-group">
-                        <label>Спеціалізація</label>
-                        <select id="specialtyFilter" onchange="filterMasters()">
-                            <option value="">Всі спеціальності</option>
-                            <option value="Ремонт">Ремонт</option>
-                            <option value="Дизайн">Дизайн</option>
-                            <option value="Електрика">Електрика</option>
-                            <option value="Сантехніка">Сантехніка</option>
-                            <option value="Малювання">Малювання</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Мінімальна оцінка</label>
-                        <select id="ratingFilter" onchange="filterMasters()">
-                            <option value="">Будь-яка</option>
-                            <option value="4.5">4.5+ ⭐</option>
-                            <option value="4">4+ ⭐</option>
-                            <option value="3.5">3.5+ ⭐</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Максимальна ціна (грн/год)</label>
-                        <input type="number" id="priceFilter" placeholder="Без ліміту" onchange="filterMasters()">
-                    </div>
-                </div>
+            <div className="mt-8 grid grid-cols-3 gap-3 text-center">
+              {["500+ замовлень", "1–3 дні доставка", "Обмін розміру"].map((item) => (
+                <div key={item} className="rounded-3xl bg-white p-4 text-sm font-black shadow-sm ring-1 ring-zinc-100">{item}</div>
+              ))}
             </div>
+          </motion.div>
 
-            <div class="masters-grid" id="mastersGrid"></div>
-        </div>
-    </div>
+          <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55 }} className="relative">
+            <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-pink-300 via-amber-200 to-white blur-2xl" />
+            <div className="relative overflow-hidden rounded-[2rem] border-4 border-white bg-white shadow-2xl">
+              <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1400&auto=format&fit=crop" alt="fashion banner" className="h-[430px] w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-pink-700/75 via-transparent to-amber-300/35" />
+              <div className="absolute bottom-6 left-6 right-6 rounded-3xl bg-white/90 p-5 backdrop-blur-xl">
+                <p className="text-sm font-black uppercase tracking-[0.25em] text-pink-600">нова колекція</p>
+                <p className="mt-1 text-3xl font-black">Стиль, який продається з першого кліку</p>
+              </div>
+            </div>
+          </motion.div>
+        </section>
 
-    <!-- Master Detail Page -->
-    <div id="masterDetail" class="page">
-        <div class="container" style="padding: 40px 0;">
-            <button class="btn-secondary" onclick="navigateTo('masters')" style="margin-bottom: 20px;">← Назад</button>
+        <section id="catalog" className="mx-auto max-w-7xl px-4 py-10 md:px-6">
+          <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <p className="font-black text-pink-600">Каталог</p>
+              <h2 className="text-4xl font-black tracking-tight">Товари для Reels-продажів</h2>
+            </div>
+            <div className="flex items-center gap-2 rounded-2xl bg-white p-2 shadow-sm ring-1 ring-zinc-100">
+              <Search className="ml-2 h-5 w-5 text-zinc-400" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Пошук товару" className="h-10 w-full bg-transparent pr-3 outline-none md:w-64" />
+            </div>
+          </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+          <div className="mb-8 flex gap-2 overflow-x-auto pb-2">
+            {categories.map((cat) => (
+              <button key={cat} onClick={() => setActiveCategory(cat)} className={`whitespace-nowrap rounded-2xl px-5 py-3 text-sm font-black transition ${activeCategory === cat ? "bg-pink-600 text-white shadow-lg shadow-pink-200" : "bg-white text-zinc-700 ring-1 ring-zinc-100 hover:bg-pink-50"}`}>
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredProducts.map((product) => (
+              <motion.div key={product.id} layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+                <Card className="group overflow-hidden rounded-[2rem] border-0 bg-white shadow-sm ring-1 ring-zinc-100 transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-pink-100">
+                  <div className="relative h-80 overflow-hidden">
+                    <img src={product.image} alt={product.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                    <div className="absolute left-4 top-4 rounded-full bg-pink-600 px-4 py-2 text-xs font-black text-white shadow-lg">{product.tag}</div>
+                  </div>
+                  <CardContent className="p-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-black">{product.name}</h3>
+                        <p className="mt-1 text-sm font-semibold text-zinc-500">{product.category} • {product.sizes.join(" / ")}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xl font-black text-pink-600">{money(product.price)}</p>
+                        <p className="text-sm font-bold text-zinc-400 line-through">{money(product.oldPrice)}</p>
+                      </div>
+                    </div>
+                    <Button onClick={() => openOrder(product)} className="mt-5 h-12 w-full rounded-2xl bg-zinc-950 font-black hover:bg-pink-600">
+                      Замовити
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        <section id="why" className="mx-auto max-w-7xl px-4 py-12 md:px-6">
+          <div className="grid gap-4 md:grid-cols-4">
+            {[
+              [Truck, "Швидка доставка", "Нова Пошта / Укрпошта"],
+              [ShieldCheck, "Безпечна покупка", "Підтвердження телефоном"],
+              [PackageCheck, "Обмін розміру", "Зручно для клієнта"],
+              [ClipboardList, "CRM замовлень", "Статуси й експорт"],
+            ].map(([Icon, title, text]) => (
+              <div key={title} className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-zinc-100">
+                <div className="mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-pink-50 text-pink-600"><Icon className="h-6 w-6" /></div>
+                <h3 className="text-lg font-black">{title}</h3>
+                <p className="mt-2 text-sm font-medium text-zinc-500">{text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+
+      <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto flex max-w-md gap-2 rounded-3xl bg-white/90 p-2 shadow-2xl ring-1 ring-zinc-100 backdrop-blur-xl md:left-auto md:right-6">
+        <Button onClick={() => document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" })} className="flex-1 rounded-2xl bg-pink-600 font-black hover:bg-pink-700"><ShoppingBag className="mr-2 h-4 w-4" /> Замовити</Button>
+        <Button variant="outline" className="rounded-2xl border-zinc-200"><Phone className="h-4 w-4" /></Button>
+        <Button onClick={() => setShowCrm(true)} variant="outline" className="rounded-2xl border-zinc-200"><ClipboardList className="h-4 w-4" /></Button>
+      </div>
+
+      <AnimatePresence>
+        {selectedProduct && (
+          <motion.div className="fixed inset-0 z-[60] grid place-items-end bg-black/45 p-3 backdrop-blur-sm md:place-items-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 50, opacity: 0 }} className="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-[2rem] bg-white shadow-2xl">
+              <div className="grid md:grid-cols-2">
+                <div className="relative min-h-[340px]">
+                  <img src={selectedProduct.image} alt={selectedProduct.name} className="h-full min-h-[340px] w-full rounded-t-[2rem] object-cover md:rounded-l-[2rem] md:rounded-tr-none" />
+                  <button onClick={() => setSelectedProduct(null)} className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white shadow-lg"><X className="h-5 w-5" /></button>
+                </div>
+                <form onSubmit={createOrder} className="p-6 md:p-8">
+                  <p className="text-sm font-black uppercase tracking-[0.2em] text-pink-600">швидке замовлення</p>
+                  <h3 className="mt-2 text-3xl font-black">{selectedProduct.name}</h3>
+                  <p className="mt-2 text-2xl font-black text-pink-600">{money(currentTotal)}</p>
+
+                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                    <input required placeholder="Ім'я" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="h-12 rounded-2xl bg-zinc-50 px-4 font-semibold outline-none ring-1 ring-zinc-100 focus:ring-pink-300" />
+                    <input required placeholder="Телефон" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="h-12 rounded-2xl bg-zinc-50 px-4 font-semibold outline-none ring-1 ring-zinc-100 focus:ring-pink-300" />
+                    <input placeholder="Місто" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} className="h-12 rounded-2xl bg-zinc-50 px-4 font-semibold outline-none ring-1 ring-zinc-100 focus:ring-pink-300" />
+                    <input placeholder="Відділення / поштомат" value={form.delivery} onChange={(e) => setForm({ ...form, delivery: e.target.value })} className="h-12 rounded-2xl bg-zinc-50 px-4 font-semibold outline-none ring-1 ring-zinc-100 focus:ring-pink-300" />
+                    <select value={form.size} onChange={(e) => setForm({ ...form, size: e.target.value })} className="h-12 rounded-2xl bg-zinc-50 px-4 font-semibold outline-none ring-1 ring-zinc-100 focus:ring-pink-300">
+                      {selectedProduct.sizes.map((s) => <option key={s}>{s}</option>)}
+                    </select>
+                    <div className="flex h-12 items-center justify-between rounded-2xl bg-zinc-50 px-3 ring-1 ring-zinc-100">
+                      <button type="button" onClick={() => setForm({ ...form, qty: Math.max(1, Number(form.qty) - 1) })}><Minus className="h-4 w-4" /></button>
+                      <span className="font-black">{form.qty}</span>
+                      <button type="button" onClick={() => setForm({ ...form, qty: Number(form.qty) + 1 })}><Plus className="h-4 w-4" /></button>
+                    </div>
+                  </div>
+                  <textarea placeholder="Коментар" value={form.comment} onChange={(e) => setForm({ ...form, comment: e.target.value })} className="mt-3 h-24 w-full rounded-2xl bg-zinc-50 p-4 font-semibold outline-none ring-1 ring-zinc-100 focus:ring-pink-300" />
+                  <Button type="submit" className="mt-4 h-14 w-full rounded-2xl bg-pink-600 text-base font-black hover:bg-pink-700"><Send className="mr-2 h-5 w-5" /> Підтвердити замовлення</Button>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showCrm && (
+          <motion.div className="fixed inset-0 z-[70] bg-zinc-950/50 p-3 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div initial={{ x: 60, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 60, opacity: 0 }} className="ml-auto h-full w-full max-w-5xl overflow-y-auto rounded-[2rem] bg-white p-5 shadow-2xl md:p-8">
+              <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
                 <div>
-                    <img id="detailImage" src="" alt="" style="width: 100%; border-radius: 12px; margin-bottom: 20px;">
+                  <p className="flex items-center gap-2 font-black text-pink-600"><Filter className="h-4 w-4" /> CRM-панель</p>
+                  <h2 className="text-3xl font-black">Управління замовленнями</h2>
                 </div>
-                <div>
-                    <h1 id="detailName" style="font-size: 32px; font-weight: 700; margin-bottom: 10px;"></h1>
-                    <p id="detailSpecialty" style="color: var(--accent-blue); font-weight: 600; margin-bottom: 20px;"></p>
-                    
-                    <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
-                            <div style="text-align: center;">
-                                <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="detailRating">4.8</div>
-                                <div style="font-size: 12px; color: var(--text-secondary);">Оцінка</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="detailReviews">245</div>
-                                <div style="font-size: 12px; color: var(--text-secondary);">Відгуків</div>
-                            </div>
-                            <div style="text-align: center;">
-                                <div style="font-size: 24px; font-weight: 700; color: var(--primary);" id="detailJobs">120+</div>
-                                <div style="font-size: 12px; color: var(--text-secondary);">Завершено</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                        <h3 style="margin-bottom: 12px; font-weight: 600;">Про майстра</h3>
-                        <p id="detailAbout" style="color: var(--text-secondary);"></p>
-                    </div>
-
-                    <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
-                        <h3 style="margin-bottom: 16px; font-weight: 600;">Послуги</h3>
-                        <div id="detailServices"></div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <button class="btn-secondary">💬 Чат</button>
-                        <button class="btn-secondary">☎️ Дзвін</button>
-                        <button class="btn-primary" style="grid-column: 1 / -1;" onclick="openBookingModal()">📅 Забронювати</button>
-                    </div>
+                <div className="flex gap-2">
+                  <Button onClick={exportOrders} variant="outline" className="rounded-2xl font-black"><Download className="mr-2 h-4 w-4" /> Excel/CSV</Button>
+                  <Button onClick={() => setShowCrm(false)} className="rounded-2xl bg-zinc-950 font-black hover:bg-pink-600"><X className="mr-2 h-4 w-4" /> Закрити</Button>
                 </div>
-            </div>
-        </div>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-4">
+                {statuses.map((status) => {
+                  const count = orders.filter((o) => o.status === status).length;
+                  return <div key={status} className="rounded-3xl bg-zinc-50 p-5 ring-1 ring-zinc-100"><p className="text-sm font-bold text-zinc-500">{status}</p><p className="mt-1 text-3xl font-black">{count}</p></div>;
+                })}
+              </div>
+
+              <div className="mt-6 rounded-[2rem] bg-zinc-50 p-5 ring-1 ring-zinc-100">
+                <h3 className="mb-4 text-2xl font-black">Додати товар</h3>
+                <form onSubmit={addProduct} className="grid gap-3 md:grid-cols-4">
+                  <input required placeholder="Назва товару" value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} className="h-12 rounded-2xl bg-white px-4 font-semibold outline-none ring-1 ring-zinc-100" />
+                  <select value={newProduct.category} onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })} className="h-12 rounded-2xl bg-white px-4 font-semibold outline-none ring-1 ring-zinc-100">
+                    {categories.filter((c) => c !== "Всі").map((c) => <option key={c}>{c}</option>)}
+                  </select>
+                  <input required type="number" placeholder="Ціна" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} className="h-12 rounded-2xl bg-white px-4 font-semibold outline-none ring-1 ring-zinc-100" />
+                  <input type="number" placeholder="Стара ціна" value={newProduct.oldPrice} onChange={(e) => setNewProduct({ ...newProduct, oldPrice: e.target.value })} className="h-12 rounded-2xl bg-white px-4 font-semibold outline-none ring-1 ring-zinc-100" />
+                  <input placeholder="Розміри через кому: S,M,L" value={newProduct.sizes} onChange={(e) => setNewProduct({ ...newProduct, sizes: e.target.value })} className="h-12 rounded-2xl bg-white px-4 font-semibold outline-none ring-1 ring-zinc-100" />
+                  <input placeholder="Кольори через кому" value={newProduct.colors} onChange={(e) => setNewProduct({ ...newProduct, colors: e.target.value })} className="h-12 rounded-2xl bg-white px-4 font-semibold outline-none ring-1 ring-zinc-100" />
+                  <input placeholder="Мітка: Хіт / Акція" value={newProduct.tag} onChange={(e) => setNewProduct({ ...newProduct, tag: e.target.value })} className="h-12 rounded-2xl bg-white px-4 font-semibold outline-none ring-1 ring-zinc-100" />
+                  <input placeholder="Або посилання на фото" value={newProduct.image} onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })} className="h-12 rounded-2xl bg-white px-4 font-semibold outline-none ring-1 ring-zinc-100" />
+                  <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} className="h-12 rounded-2xl bg-white px-4 py-3 font-semibold outline-none ring-1 ring-zinc-100 md:col-span-2" />
+                  <Button disabled={uploading} type="submit" className="h-12 rounded-2xl bg-pink-600 font-black hover:bg-pink-700 md:col-span-2">{uploading ? "Завантажую..." : "Додати товар на сайт"}</Button>
+                </form>
+                {newProduct.image && <img src={newProduct.image} alt="preview" className="mt-4 h-36 w-36 rounded-2xl object-cover ring-1 ring-zinc-200" />}
+                {imageFile && <p className="mt-3 text-sm font-bold text-zinc-600">Обране фото: {imageFile.name}</p>}
+              </div>
+
+              <div className="mt-6 rounded-[2rem] bg-white p-5 ring-1 ring-zinc-100">
+                <h3 className="mb-4 text-2xl font-black">Товари на сайті</h3>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {products.map((p) => (
+                    <div key={p.id} className="flex items-center gap-3 rounded-2xl bg-zinc-50 p-3 ring-1 ring-zinc-100">
+                      <img src={p.image} alt={p.name} className="h-16 w-16 rounded-xl object-cover" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-black">{p.name}</p>
+                        <p className="text-sm font-bold text-pink-600">{money(p.price)}</p>
+                      </div>
+                      <button onClick={() => deleteProduct(p)} className="grid h-10 w-10 place-items-center rounded-xl bg-white text-zinc-500 hover:bg-pink-50 hover:text-pink-600"><X className="h-4 w-4" /></button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 overflow-hidden rounded-[2rem] ring-1 ring-zinc-100">
+                <div className="hidden grid-cols-[90px_1fr_150px_120px_150px_180px] bg-zinc-950 px-4 py-3 text-sm font-black text-white md:grid">
+                  <span>ID</span><span>Клієнт</span><span>Телефон</span><span>Сума</span><span>Місто</span><span>Статус</span>
+                </div>
+                <div className="divide-y divide-zinc-100">
+                  {orders.map((order) => (
+                    <div key={order.id} className="grid gap-3 p-4 md:grid-cols-[90px_1fr_150px_120px_150px_180px] md:items-center">
+                      <span className="text-sm font-black text-zinc-400">#{order.id}</span>
+                      <div>
+                        <p className="font-black">{order.name}</p>
+                        <p className="text-sm font-semibold text-zinc-500">{order.product} • {order.size} • {order.qty} шт.</p>
+                      </div>
+                      <span className="font-bold">{order.phone}</span>
+                      <span className="font-black text-pink-600">{money(order.total)}</span>
+                      <span className="font-semibold text-zinc-600">{order.city || "—"}</span>
+                      <select value={order.status} onChange={(e) => changeStatus(order, e.target.value)} className="h-11 rounded-2xl bg-zinc-50 px-3 font-black outline-none ring-1 ring-zinc-100">
+                        {statuses.map((s) => <option key={s}>{s}</option>)}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 rounded-[2rem] bg-pink-50 p-5 ring-1 ring-pink-100">
+                <p className="flex items-center gap-2 font-black text-pink-700"><CheckCircle2 className="h-5 w-5" /> Firebase підключено в коді</p>
+                <p className="mt-2 text-sm font-medium text-pink-900/70">Товари зберігаються в Firestore, фото — у Firebase Storage, замовлення — в колекції orders. Залишилось вставити свій firebaseConfig і правила доступу.</p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
 
-    <!-- Login Page -->
-    <div id="login" class="page">
-        <div class="form-container">
-            <h2 class="form-title">Вхід в аккаунт</h2>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="loginEmail" placeholder="your@email.com">
-            </div>
-            <div class="form-group">
-                <label>Пароль</label>
-                <input type="password" id="loginPassword" placeholder="••••••••">
-            </div>
-            <button class="btn-primary" style="width: 100%; margin: 20px 0;" onclick="login()">Увійти</button>
-            <div class="form-link">
-                Немаєте аккаунту? <a onclick="navigateTo('register')">Зареєструйтесь</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Register Page -->
-    <div id="register" class="page">
-        <div class="form-container">
-            <h2 class="form-title">Реєстрація</h2>
-            <div class="form-group">
-                <label>ПІБ</label>
-                <input type="text" id="registerName" placeholder="Іван Петренко">
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="registerEmail" placeholder="your@email.com">
-            </div>
-            <div class="form-group">
-                <label>Пароль</label>
-                <input type="password" id="registerPassword" placeholder="••••••••">
-            </div>
-            <div class="form-group">
-                <label>Телефон</label>
-                <input type="tel" id="registerPhone" placeholder="+38 (0XX) XXX-XX-XX">
-            </div>
-            <button class="btn-primary" style="width: 100%; margin: 20px 0;" onclick="register()">Зареєструватися</button>
-            <div class="form-link">
-                Вже маєте аккаунт? <a onclick="navigateTo('login')">Увійдіть</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Profile Page -->
-    <div id="profile" class="page">
-        <div class="profile-header">
-            <div class="container">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="" class="profile-avatar">
-                <h1 id="profileNameHeader">Користувач</h1>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="profile-container">
-                <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 700;">Персональні дані</h2>
-                <div class="profile-item">
-                    <span class="profile-label">Ім'я</span>
-                    <span class="profile-value" id="profileName">-</span>
-                </div>
-                <div class="profile-item">
-                    <span class="profile-label">Email</span>
-                    <span class="profile-value" id="profileEmail">-</span>
-                </div>
-                <div class="profile-item">
-                    <span class="profile-label">Телефон</span>
-                    <span class="profile-value" id="profilePhone">-</span>
-                </div>
-                <div class="profile-item">
-                    <span class="profile-label">Дата реєстрації</span>
-                    <span class="profile-value" id="profileDate">-</span>
-                </div>
-            </div>
-
-            <button class="btn-secondary" onclick="navigateTo('settings')" style="margin-bottom: 40px;">Змінити дані</button>
-        </div>
-    </div>
-
-    <!-- Orders Page -->
-    <div id="orders" class="page">
-        <div class="container" style="padding: 40px 0;">
-            <h1 style="margin-bottom: 30px; font-size: 32px; font-weight: 700;">Мої замовлення</h1>
-
-            <div id="ordersList">
-                <div class="order-card">
-                    <div class="order-info">
-                        <h4>Ремонт квартири в центрі</h4>
-                        <p style="color: var(--text-secondary); font-size: 13px;">Іван Петренко · 15000 грн</p>
-                    </div>
-                    <div class="order-status pending">В процесі</div>
-                </div>
-                <div class="order-card">
-                    <div class="order-info">
-                        <h4>Дизайн інтер'єру</h4>
-                        <p style="color: var(--text-secondary); font-size: 13px;">Марія Коваленко · 8000 грн</p>
-                    </div>
-                    <div class="order-status completed">Завершено</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Page -->
-    <div id="settings" class="page">
-        <div class="form-container">
-            <h2 class="form-title">Налаштування профіля</h2>
-            <div class="form-group">
-                <label>Ім'я</label>
-                <input type="text" id="settingsName" value="">
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="settingsEmail" value="">
-            </div>
-            <div class="form-group">
-                <label>Телефон</label>
-                <input type="tel" id="settingsPhone" value="">
-            </div>
-            <div class="form-group">
-                <label>Новий пароль (залиште порожнім щоб не змінювати)</label>
-                <input type="password" id="settingsPassword" placeholder="••••••••">
-            </div>
-            <button class="btn-primary" style="width: 100%; margin: 20px 0;" onclick="saveSettings()">Зберегти зміни</button>
-        </div>
-    </div>
-
-    <!-- About Page -->
-    <div id="about" class="page">
-        <div class="container" style="padding: 60px 0;">
-            <h1 style="margin-bottom: 40px; font-size: 40px; font-weight: 700; text-align: center;">Про MasterPlace</h1>
-            
-            <div style="max-width: 800px; margin: 0 auto; color: var(--text-secondary); line-height: 1.8; font-size: 15px;">
-                <p style="margin-bottom: 20px;">
-                    MasterPlace - це сучасна платформа, яка з'єднує замовників з квалібікованими майстрами різних спеціальностей. Наша місія - зробити пошук фахівця простим, надійним і доступним.
-                </p>
-                <p style="margin-bottom: 20px;">
-                    Ми впевнені, що якість роботи повинна бути пріоритетом, тому всі майстри на платформі проходять ретельну перевірку й мають рейтинги від реальних клієнтів.
-                </p>
-                <p>
-                    З MasterPlace ви отримуєте не просто контакт майстра, а партнера в реалізації вашого проекту з гарантованою якістю виконання.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contact Page -->
-    <div id="contact" class="page">
-        <div class="container" style="padding: 60px 0;">
-            <h1 style="margin-bottom: 40px; font-size: 40px; font-weight: 700; text-align: center;">Контакти</h1>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1000px; margin: 0 auto;">
-                <div>
-                    <h3 style="margin-bottom: 20px; font-weight: 700;">Зв'яжіться з нами</h3>
-                    <div style="margin-bottom: 20px;">
-                        <p style="color: var(--text-secondary); margin-bottom: 8px;">Телефон</p>
-                        <p style="font-weight: 600;">+38 (067) 123-45-67</p>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <p style="color: var(--text-secondary); margin-bottom: 8px;">Email</p>
-                        <p style="font-weight: 600;">hello@masterplace.ua</p>
-                    </div>
-                    <div>
-                        <p style="color: var(--text-secondary); margin-bottom: 8px;">Адреса</p>
-                        <p style="font-weight: 600;">Львів, вул. Лесі Українки, 15</p>
-                    </div>
-                </div>
-
-                <div class="form-container" style="padding: 24px; box-shadow: var(--shadow);">
-                    <h3 style="margin-bottom: 16px;">Напишіть нам</h3>
-                    <div class="form-group">
-                        <input type="text" placeholder="Ваше ім'я" style="border: 1px solid var(--border); padding: 10px;">
-                    </div>
-                    <div class="form-group">
-                        <input type="email" placeholder="your@email.com" style="border: 1px solid var(--border); padding: 10px;">
-                    </div>
-                    <div class="form-group">
-                        <textarea placeholder="Ваше повідомлення" style="border: 1px solid var(--border); padding: 10px;"></textarea>
-                    </div>
-                    <button class="btn-primary" style="width: 100%;">Надіслати</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Booking Modal -->
-    <div class="modal" id="bookingModal" onclick="closeBookingModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeBookingModal()">×</button>
-            <h2 class="form-title">Забронювати майстра</h2>
-            <div class="form-group">
-                <label>Дата</label>
-                <input type="date">
-            </div>
-            <div class="form-group">
-                <label>Час</label>
-                <input type="time">
-            </div>
-            <div class="form-group">
-                <label>Опис роботи</label>
-                <textarea placeholder="Розповідайте детально про роботу"></textarea>
-            </div>
-            <button class="btn-primary" style="width: 100%;">Забронювати</button>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Про MasterPlace</h4>
-                    <ul>
-                        <li><a onclick="navigateTo('about')">Про платформу</a></li>
-                        <li><a onclick="navigateTo('contact')">Контакти</a></li>
-                        <li><a href="#">Блог</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Для замовників</h4>
-                    <ul>
-                        <li><a onclick="navigateTo('masters')">Пошук майстра</a></li>
-                        <li><a onclick="navigateTo('orders')">Мої замовлення</a></li>
-                        <li><a href="#">Гарантія якості</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Для майстрів</h4>
-                    <ul>
-                        <li><a onclick="navigateTo('register')">Реєстрація</a></li>
-                        <li><a href="#">Функціонал</a></li>
-                        <li><a href="#">Комісія</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Контакти</h4>
-                    <ul>
-                        <li><a href="#">hello@masterplace.ua</a></li>
-                        <li><a href="#">+38 (067) 123-45-67</a></li>
-                        <li><a href="#">Львів, Україна</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2024 MasterPlace. Всі права захищені.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Data
-        const masters = [
-            {
-                id: 1,
-                name: "Іван Петренко",
-                specialty: "Ремонт",
-                rating: 4.8,
-                reviews: 245,
-                jobs: "120+",
-                price: 350,
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-                about: "Професійний майстер з 15 років досвіду в ремонті квартир та офісів. Гарантія якості на всі виконані роботи.",
-                services: [
-                    { name: "Капітальний ремонт", price: 500 },
-                    { name: "Косметичний ремонт", price: 350 },
-                    { name: "Дизайн квартири", price: 400 }
-                ]
-            },
-            {
-                id: 2,
-                name: "Марія Коваленко",
-                specialty: "Дизайн",
-                rating: 4.9,
-                reviews: 189,
-                jobs: "95+",
-                price: 450,
-                image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
-                about: "Творча дизайнерка з портфоліо престижних проектів. Спеціалізуюсь на сучасному дизайні інтер'єру.",
-                services: [
-                    { name: "Концепція дизайну", price: 600 },
-                    { name: "Повний дизайн-проект", price: 800 },
-                    { name: "3D-візуалізація", price: 500 }
-                ]
-            },
-            {
-                id: 3,
-                name: "Сергій Волков",
-                specialty: "Електрика",
-                rating: 4.7,
-                reviews: 312,
-                jobs: "180+",
-                price: 300,
-                image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-                about: "Ліцензований електрик з повним спектром послуг. Все виконується згідно норм безпеки та ПУЕ.",
-                services: [
-                    { name: "Монтаж проводки", price: 250 },
-                    { name: "Заміна розеток/вимикачів", price: 150 },
-                    { name: "Освітлення", price: 300 }
-                ]
-            },
-            {
-                id: 4,
-                name: "Олексій Сидоренко",
-                specialty: "Сантехніка",
-                rating: 4.6,
-                reviews: 198,
-                jobs: "110+",
-                price: 320,
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-                about: "Досвідчений сантехнік, займаюся монтажем, ремонтом та обслуговуванням сантехніки.",
-                services: [
-                    { name: "Монтаж труб", price: 400 },
-                    { name: "Заміна змішувача", price: 200 },
-                    { name: "Заміна ванни", price: 350 }
-                ]
-            },
-            {
-                id: 5,
-                name: "Аліна Лисак",
-                specialty: "Малювання",
-                rating: 4.9,
-                reviews: 156,
-                jobs: "85+",
-                price: 280,
-                image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
-                about: "Професійна малярка з ідеальним в подробиця. Використовую якісні матеріали та краски.",
-                services: [
-                    { name: "Фарбування стін", price: 150 },
-                    { name: "Фарбування стелі", price: 200 },
-                    { name: "Декоративне малювання", price: 300 }
-                ]
-            },
-            {
-                id: 6,
-                name: "Геннадій Шевченко",
-                specialty: "Ремонт",
-                rating: 4.8,
-                reviews: 267,
-                jobs: "140+",
-                price: 380,
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-                about: "Спеціаліст по комплексному ремонту. Гарантійне обслуговування всіх виконаних робіт.",
-                services: [
-                    { name: "Комплексний ремонт", price: 500 },
-                    { name: "Мансардні роботи", price: 600 },
-                    { name: "Реставрація", price: 450 }
-                ]
-            }
-        ];
-
-        let currentUser = null;
-        let filteredMasters = [...masters];
-        let selectedMasterId = null;
-
-        // Navigation
-        function navigateTo(page) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            // Show selected page
-            document.getElementById(page).classList.add('active');
-            // Update nav links
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            event.target?.classList.add('active');
-
-            // Load page-specific content
-            if (page === 'masters') renderMasters();
-            if (page === 'home') renderPopularMasters();
-            if (page === 'profile') loadProfile();
-            if (page === 'settings') loadSettings();
-        }
-
-        // Auth
-        function login() {
-            const email = document.getElementById('loginEmail').value;
-            const name = email.split('@')[0];
-            
-            if (email && document.getElementById('loginPassword').value) {
-                currentUser = { name, email };
-                localStorage.setItem('user', JSON.stringify(currentUser));
-                updateAuthUI();
-                navigateTo('home');
-            }
-        }
-
-        function register() {
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            
-            if (name && email && document.getElementById('registerPassword').value) {
-                currentUser = { name, email };
-                localStorage.setItem('user', JSON.stringify(currentUser));
-                updateAuthUI();
-                navigateTo('home');
-            }
-        }
-
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('user');
-            updateAuthUI();
-            navigateTo('home');
-        }
-
-        function updateAuthUI() {
-            const authButtons = document.getElementById('authButtons');
-            const userSection = document.getElementById('userSection');
-
-            if (currentUser) {
-                authButtons.style.display = 'none';
-                userSection.style.display = 'flex';
-                document.getElementById('userInitials').textContent = currentUser.name[0].toUpperCase();
-            } else {
-                authButtons.style.display = 'flex';
-                userSection.style.display = 'none';
-            }
-        }
-
-        function toggleUserMenu() {
-            document.getElementById('userDropdown').classList.toggle('active');
-        }
-
-        // Masters
-        function renderMasters() {
-            const grid = document.getElementById('mastersGrid');
-            grid.innerHTML = '';
-
-            filteredMasters.forEach(master => {
-                const card = document.createElement('div');
-                card.className = 'master-card';
-                card.onclick = () => showMasterDetail(master.id);
-                card.innerHTML = `
-                    <img src="${master.image}" class="master-image">
-                    <div class="master-info">
-                        <div class="master-header">
-                            <div>
-                                <div class="master-name">${master.name}</div>
-                                <div class="master-specialty">${master.specialty}</div>
-                            </div>
-                        </div>
-                        <div class="master-rating">
-                            <span>⭐ ${master.rating}</span>
-                            <span>(${master.reviews})</span>
-                        </div>
-                        <div class="master-price">${master.price} грн/год</div>
-                        <button class="master-btn">Детальніше</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function renderPopularMasters() {
-            const grid = document.getElementById('popularMasters');
-            grid.innerHTML = '';
-
-            masters.slice(0, 3).forEach(master => {
-                const card = document.createElement('div');
-                card.className = 'master-card';
-                card.onclick = () => { selectedMasterId = master.id; navigateTo('masterDetail'); };
-                card.innerHTML = `
-                    <img src="${master.image}" class="master-image">
-                    <div class="master-info">
-                        <div class="master-header">
-                            <div>
-                                <div class="master-name">${master.name}</div>
-                                <div class="master-specialty">${master.specialty}</div>
-                            </div>
-                        </div>
-                        <div class="master-rating">
-                            <span>⭐ ${master.rating}</span>
-                            <span>(${master.reviews})</span>
-                        </div>
-                        <div class="master-price">${master.price} грн/год</div>
-                        <button class="master-btn">Детальніше</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function showMasterDetail(masterId) {
-            selectedMasterId = masterId;
-            navigateTo('masterDetail');
-            loadMasterDetail();
-        }
-
-        function loadMasterDetail() {
-            const master = masters.find(m => m.id === selectedMasterId);
-            if (!master) return;
-
-            document.getElementById('detailImage').src = master.image;
-            document.getElementById('detailName').textContent = master.name;
-            document.getElementById('detailSpecialty').textContent = master.specialty;
-            document.getElementById('detailRating').textContent = master.rating;
-            document.getElementById('detailReviews').textContent = master.reviews;
-            document.getElementById('detailJobs').textContent = master.jobs;
-            document.getElementById('detailAbout').textContent = master.about;
-
-            const servicesList = document.getElementById('detailServices');
-            servicesList.innerHTML = master.services.map(service => `
-                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border);">
-                    <span>${service.name}</span>
-                    <span style="font-weight: 700; color: var(--accent-gold);">${service.price} грн</span>
-                </div>
-            `).join('');
-        }
-
-        function filterMasters() {
-            const specialty = document.getElementById('specialtyFilter').value;
-            const minRating = parseFloat(document.getElementById('ratingFilter').value) || 0;
-            const maxPrice = parseFloat(document.getElementById('priceFilter').value) || Infinity;
-
-            filteredMasters = masters.filter(m => 
-                (!specialty || m.specialty === specialty) &&
-                m.rating >= minRating &&
-                m.price <= maxPrice
-            );
-
-            renderMasters();
-        }
-
-        // Profile
-        function loadProfile() {
-            if (!currentUser) return;
-
-            document.getElementById('profileNameHeader').textContent = currentUser.name;
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('profileEmail').textContent = currentUser.email;
-            document.getElementById('profilePhone').textContent = '+38 (0XX) XXX-XX-XX';
-            document.getElementById('profileDate').textContent = new Date().toLocaleDateString('uk-UA');
-        }
-
-        function loadSettings() {
-            if (!currentUser) return;
-
-            document.getElementById('settingsName').value = currentUser.name;
-            document.getElementById('settingsEmail').value = currentUser.email;
-        }
-
-        function saveSettings() {
-            currentUser.name = document.getElementById('settingsName').value;
-            currentUser.email = document.getElementById('settingsEmail').value;
-            localStorage.setItem('user', JSON.stringify(currentUser));
-            alert('✓ Зміни збережені');
-        }
-
-        // Search
-        function searchAndNavigate() {
-            const query = document.getElementById('homeSearch').value;
-            if (query) {
-                navigateTo('masters');
-            }
-        }
-
-        // Modal
-        function openBookingModal() {
-            document.getElementById('bookingModal').classList.add('active');
-        }
-
-        function closeBookingModal(event) {
-            if (event && event.target !== document.getElementById('bookingModal')) return;
-            document.getElementById('bookingModal').classList.remove('active');
-        }
-
-        // Initialize
-        window.addEventListener('load', () => {
-            const stored = localStorage.getItem('user');
-            if (stored) {
-                currentUser = JSON.parse(stored);
-            }
-            updateAuthUI();
-            renderPopularMasters();
-        });
-    </script>
 </body>
 </html>
