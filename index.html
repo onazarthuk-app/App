@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <img src="banner.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Встановлення дверей Львів</title>
+
+  <title>Заявка на замір або монтаж дверей</title>
+  <meta name="description" content="Заявка на замір або монтаж дверей у Львові та області." />
+
   <style>
     * {
       box-sizing: border-box;
@@ -21,32 +23,89 @@
       background: #070707;
       color: #fff;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
     .page {
       min-height: 100vh;
       background:
-        radial-gradient(circle at 80% 10%, rgba(220, 38, 38, 0.18), transparent 32%),
-        linear-gradient(180deg, #050505 0%, #101010 48%, #050505 100%);
+        radial-gradient(circle at 82% 8%, rgba(225, 29, 46, 0.22), transparent 32%),
+        linear-gradient(180deg, #030303 0%, #101010 50%, #050505 100%);
     }
+
+    /* ===== АДАПТИВНИЙ БАНЕР ===== */
 
     .top-banner {
       width: 100%;
-      background: #111;
+      background: #000;
       border-bottom: 1px solid rgba(255,255,255,0.08);
       box-shadow: 0 18px 55px rgba(0,0,0,0.55);
+      overflow: hidden;
     }
 
-    .top-banner img {
+    .banner-frame {
       width: 100%;
-      height: auto;
-      display: block;
+      max-width: 1920px;
+      margin: 0 auto;
+      background: #000;
+      aspect-ratio: 1920 / 620;
+      min-height: 220px;
+      max-height: 620px;
+      overflow: hidden;
     }
+
+    .banner-frame img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center center;
+    }
+
+    /* Якщо банер широкий — на планшеті показуємо центр і праву частину */
+    @media (max-width: 1024px) {
+      .banner-frame {
+        aspect-ratio: 1024 / 430;
+        min-height: 250px;
+      }
+
+      .banner-frame img {
+        object-position: center center;
+      }
+    }
+
+    /* На телефоні банер не ламає сайт і не створює горизонтальний скрол */
+    @media (max-width: 700px) {
+      .banner-frame {
+        aspect-ratio: 4 / 3;
+        min-height: 310px;
+      }
+
+      .banner-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 58% center;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .banner-frame {
+        aspect-ratio: 3 / 3.35;
+        min-height: 360px;
+      }
+
+      .banner-frame img {
+        object-position: 56% center;
+      }
+    }
+
+    /* ===== ФОРМА ===== */
 
     .form-section {
       width: min(860px, 92%);
       margin: 0 auto;
-      padding: 46px 0 64px;
+      padding: 46px 0 86px;
     }
 
     .form-card {
@@ -231,21 +290,22 @@
       border-radius: 50%;
       font-size: 26px;
       box-shadow: 0 14px 34px rgba(225,29,46,0.42);
+      transition: 0.2s ease;
+    }
+
+    .floating-call:hover {
+      transform: translateY(-2px) scale(1.03);
+      background: #ff1f32;
     }
 
     @media (max-width: 700px) {
-      .top-banner {
-        overflow: hidden;
-      }
-
-      .top-banner img {
-        width: 150%;
-        max-width: none;
-        transform: translateX(-17%);
-      }
-
       .form-section {
+        width: min(94%, 860px);
         padding-top: 28px;
+      }
+
+      .form-card {
+        border-radius: 22px;
       }
 
       .title h1 {
@@ -267,11 +327,15 @@
     }
   </style>
 </head>
+
 <body>
   <div class="page">
-    <div class="top-banner">
-      <img src="/mnt/data/690668403_122097414051306745_2353937245415425312_n.png" alt="Встановлення дверей Львів" />
-    </div>
+    <header class="top-banner">
+      <div class="banner-frame">
+        <!-- Файл banner.png має лежати в тій самій папці, що й index.html -->
+        <img src="banner.png" alt="" />
+      </div>
+    </header>
 
     <main class="form-section">
       <section class="form-card">
